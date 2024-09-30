@@ -68,6 +68,7 @@ public class TestMaquina : TestAdo
     [InlineData(2)]
     [InlineData(3)]
     [InlineData(4)]
+    [InlineData(5)]
     public void TestEliminarMaquina(int idMaquina)
     {
 
