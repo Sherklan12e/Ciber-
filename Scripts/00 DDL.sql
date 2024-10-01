@@ -58,6 +58,5 @@ CREATE TABLE HistorialdeAlquiler (
 
 
 
--- Los datos para el tipo si es libre o una hora ya definida IMPORTANTEEEEEE
 INSERT INTO Tipo (tipo) VALUES ('Libre');
 INSERT INTO Tipo (tipo) VALUES ('Hora Definida');
