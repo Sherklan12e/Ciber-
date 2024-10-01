@@ -25,7 +25,6 @@ CREATE PROCEDURE Cuentas(OUT uNcuenta INT,IN unnombre VARCHAR(45), IN unPas CHAR
 BEGIN
 
 	INSERT INTO Cuenta(nombre,pass,dni,horaRegistrada)
-	
   	  VALUES(unnombre,sha2(unPas,256),dni,hora);
 	set uNcuenta = last_insert_id();
 	 
@@ -36,26 +35,28 @@ DROP PROCEDURE IF EXISTS alquilarMaquina2 $$
 CREATE PROCEDURE alquilarMaquina2( IN unNcuenta INT ,
   							  IN unNmaquina INT,
                        		 IN tcantidad TIME,
-                       		 IN pagadood bool,
                       		 OUT nIdAlquiler INT)
                       		 
 BEGIN
  	INSERT INTO Alquiler(Ncuenta, Nmaquina, tipo, cantidadTiempo, pagado)
-    VALUES (unNcuenta, unNmaquina, 2, tcantidad, pagadood);
+    VALUES (unNcuenta, unNmaquina, 2, tcantidad, true);
 
     SET nIdAlquiler = LAST_INSERT_ID();
 END $$
 
 DROP PROCEDURE IF EXISTS alquilarMaquina1 $$
 CREATE PROCEDURE alquilarMaquina1(IN unNcuenta INT ,
-  							  IN unNmaquina INT)
+  							  IN unNmaquina INT,
+                              out nIdAlquiler INT)
                       		 
                       		 
 BEGIN
 	INSERT INTO Alquiler(Ncuenta,Nmaquina,tipo,cantidadTiempo,pagado)
   	  values (unNcuenta,unNmaquina,1,0,false);
-
+	SET nIdAlquiler = LAST_INSERT_ID();
 END $$
+
+
 
 DROP PROCEDURE IF EXISTS salirMaquina $$
 CREATE PROCEDURE  salirMaquina(IN unmaqui INT)
