@@ -48,7 +48,7 @@ app.MapGet("/alquileres/{id}", async (int id, IDAO db) =>
 
 app.MapPost("/alquileres", async (Alquiler alquiler, IDAO db) =>
 {
-    await db.AgregarAlquilerAsync(alquiler,false);
+    await db.AgregarAlquilerAsync(alquiler,true);
     return Results.Created($"/alquileres/{alquiler.IdAlquiler}", alquiler);
 });
 

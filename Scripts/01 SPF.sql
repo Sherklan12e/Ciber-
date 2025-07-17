@@ -54,7 +54,7 @@ CREATE PROCEDURE alquilarMaquina1(IN unNcuenta INT ,
 BEGIN
 	INSERT INTO Alquiler(Ncuenta,Nmaquina,tipo,cantidadTiempo,pagado)
   	  values (unNcuenta,unNmaquina,1,0,false);
-
+	SET @idAlquiler = LAST_INSERT_ID();
 END $$
 
 DROP PROCEDURE IF EXISTS salirMaquina $$

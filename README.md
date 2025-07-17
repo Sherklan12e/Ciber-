@@ -17,7 +17,7 @@
 <br>
 
 
-# Antes de correr el programa
+<!-- # Antes de correr el programa
 Cambia estos datos con los tuyos , esta en src/Ciber.Test/itest.cs
 ```c#
 public class TestAdo
@@ -29,7 +29,7 @@ public class TestAdo
     public TestAdo() => Ado = new CuentaRepository(_cadena);
     public TestAdo(string cadena) => Ado = new CuentaRepository(cadena);
 } 
-```
+``` -->
 
 ## Abre 2 terminales 
 * <h4>Primer terminal 
@@ -51,7 +51,7 @@ dotnet test
 ``` 
 
 
-<!-- 
+
 # use json para tu db
 ```json
 {
@@ -60,7 +60,7 @@ dotnet test
     "Ciber": "Server=localhost;Database=Ciber;Uid=5to_agbd;pwd=Trigg3rs!;Allow User Variables=True"
 
   }
-} -->
+}
 
 
 <!-- using Microsoft.Extensions.Configuration;
