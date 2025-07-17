@@ -8,6 +8,14 @@ public class TestMaquina : TestAdo
 
 {
     
+    
+    private IDAO Ado;
+    public TestMaquina() : base()
+    {
+        Ado = new ADOD(Conexion);
+    }
+
+    
     [Fact]
     public void TesstMaquina()
     {
@@ -95,4 +103,6 @@ public class TestMaquina : TestAdo
         var obtenida = await Ado.ObtenerMaquinaPorIdAsync(maquina.Nmaquina);
         Assert.Null(obtenida);
     }
+
 }
+

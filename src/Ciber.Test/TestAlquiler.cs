@@ -1,10 +1,18 @@
 
 using Ciber.core;
+using Ciber.Dapper;
 using Xunit;
 
 namespace Ciber.Test;
 public class TestAlquiler : TestAdo
 {   
+    private IDAO Ado;
+    public TestAlquiler() : base()
+    {
+        Ado = new ADOD(Conexion);
+    }
+
+
     [Theory]
     [InlineData(3, 9, 2, 3)]
     [InlineData(4, 10, 2, 5)]
@@ -79,4 +87,7 @@ public class TestAlquiler : TestAdo
         Assert.Equal(TimeSpan.FromHours(tiempo), obtenerAlquiler.CantidadTiempo);
     }
     
+
+
 }
+
