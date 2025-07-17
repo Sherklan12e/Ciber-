@@ -32,25 +32,27 @@ if (app.Environment.IsDevelopment())
 }
 
 
-// cuentas
+// ALQUILERES
 
-app.MapGet("/cuentas", async (IDAO db) =>
+app.MapGet("/alquileres", async (IDAO db) =>
 {
-    var cuentas = await db.ObtenerTodasLasCuentasAsync();
-    return Results.Ok(cuentas);
+    var alquileres = await db.ObtenerTodosLosAlquileresAsync();
+    return Results.Ok(alquileres);
 });
 
-app.MapGet("/cuentas/{id}", async (int id, IDAO db) =>
+app.MapGet("/alquileres/{id}", async (int id, IDAO db) =>
 {
-    var cuenta = await db.ObtenerCuentaPorIdAsync(id);
-    return cuenta is not null ? Results.Ok(cuenta) : Results.NotFound();
+    var alquiler = await db.ObtenerAlquilerPorIdAsync(id);
+    return alquiler is not null ? Results.Ok(alquiler) : Results.NotFound();
 });
 
-app.MapPost("/cuentas", async (Cuenta cuenta, IDAO db) =>
+app.MapPost("/alquileres", async (Alquiler alquiler, IDAO db) =>
 {
-    await db.AgregarCuentaAsync(cuenta);
-    return Results.Created($"/cuentas/{cuenta.Ncuenta}", cuenta);
+    await db.AgregarAlquilerAsync(alquiler,false);
+    return Results.Created($"/alquileres/{alquiler.IdAlquiler}", alquiler);
 });
+
+
 
 // maquinas
 
@@ -71,5 +73,27 @@ app.MapPost("/maquinas", async (Maquina maquina, IDAO db) =>
     await db.AgregarMaquinaAsync(maquina);
     return Results.Created($"/maquinas/{maquina.Nmaquina}", maquina);
 });
+
+// Cuentas
+
+app.MapGet("/cuentas", async (IDAO db) =>
+{
+    var cuentas = await db.ObtenerTodasLasCuentasAsync();
+    return Results.Ok(cuentas);
+});
+
+app.MapGet("/cuentas/{id}", async (int id, IDAO db) =>
+{
+    var cuenta = await db.ObtenerCuentaPorIdAsync(id);
+    return cuenta is not null ? Results.Ok(cuenta) : Results.NotFound();
+});
+
+app.MapPost("/cuentas", async (Cuenta cuenta, IDAO db) =>
+{
+    await db.AgregarCuentaAsync(cuenta);
+    return Results.Created($"/cuentas/{cuenta.Ncuenta}", cuenta);
+});
+
+
 
 app.Run();
