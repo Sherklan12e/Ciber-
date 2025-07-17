@@ -1,12 +1,13 @@
 DROP DATABASE IF EXISTS 5to_Ciber;
-CREATE DATABASE 5to_Ciber;
+CREATE DATABASE 5to_Ciber CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
 USE 5to_Ciber;
 
 
 -- Tabla Cuenta
 CREATE TABLE Cuenta (
     Ncuenta INT AUTO_INCREMENT,
-    nombre VARCHAR(45),
+    nombre VARCHAR(45) CHARACTER SET utf8mb4, 
 	pass CHAR(64),
     dni INT,
     horaRegistrada TIME,

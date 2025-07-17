@@ -17,27 +17,22 @@
 <br>
 
 
-<!-- # Antes de correr el programa
-Cambia estos datos con los tuyos , esta en src/Ciber.Test/itest.cs
+# Antes de correr el programa
+Cambia estos datos con los tuyos , esta en src/Ciber.Test/appsettings.json
 ```c#
-public class TestAdo
-{
-    protected readonly IDAO Ado;
-    private const string   _cadena = "Server=localhost;Database=LATABLA;Uid=LABASEDEDATOS;pwd=TUCONTRASEÑA;Allow User Variables=True";
-    
+"ConnectionStrings": {
+    "MySQL": "server=localhost;user=root;password=root;database=5to_ciber;CharSet=utf8mb4"
+  }
 
-    public TestAdo() => Ado = new CuentaRepository(_cadena);
-    public TestAdo(string cadena) => Ado = new CuentaRepository(cadena);
-} 
-``` -->
+```
 
 ## Abre 2 terminales 
 * <h4>Primer terminal 
 
-Dirigete ala carpeta Scripts 
-dentro de tu terminal, ejecuta 
+Dirigete a la carpeta Scripts 
+dentro de tu terminal, ejecuta este comando para que acepte utf8mb4
 ```
-mysql -u NombreDeBaseDeDatos -p 
+ mysql --default-character-set=utf8mb4 -u NOMBREDEUSUARIOS -p 
 ```
 te pedira tu contraseña 
 Una vez dentro ejecuta 
@@ -51,7 +46,7 @@ dotnet test
 ``` 
 
 
-
+<!-- 
 # use json para tu db
 ```json
 {
@@ -60,7 +55,7 @@ dotnet test
     "Ciber": "Server=localhost;Database=Ciber;Uid=5to_agbd;pwd=Trigg3rs!;Allow User Variables=True"
 
   }
-}
+} -->
 
 
 <!-- using Microsoft.Extensions.Configuration;
