@@ -296,6 +296,18 @@ public class ADOD: IDAO
             var sql = "SELECT * FROM HistorialAlquiler";
             return await _dbConnection.QueryAsync<HistorialdeAlquiler>(sql);
         }
+        public async Task<IEnumerable<Maquina>> ObtenerMaquinaDisponiblesAsync()
+        {
+            var sql = "SELECT * FROM Maquina WHERE estado";
+            return await _dbConnection.QueryAsync<Maquina>(sql);
+        }
+
+        public async Task<IEnumerable<Maquina>> ObtenerMaquinaNoDisponiblesesAsync()
+        {
+            var sql = "SELECT * FROM Maquina WHERE NOT estado";
+            return await _dbConnection.QueryAsync<Maquina>(sql);
+        }
+
     }   
 
 }

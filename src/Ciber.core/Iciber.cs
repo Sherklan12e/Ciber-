@@ -41,6 +41,10 @@ public interface IDAO
 
     Task AgregarMaquinaAsync(Maquina maquina);
     Task<Maquina> ObtenerMaquinaPorIdAsync(int nmaquina);
+
+    Task<IEnumerable<Maquina>> ObtenerMaquinaDisponiblesAsync();
+    Task<IEnumerable<Maquina>> ObtenerMaquinaNoDisponiblesesAsync();
+    
     Task ActualizarMaquinaAsync(Maquina maquina);
     Task EliminarMaquinaAsync(int nmaquina);
     Task<IEnumerable<Maquina>> ObtenerTodasLasMaquinasAsync();
@@ -54,6 +58,7 @@ public interface IDAO
     Task AgregarHistorialAsync(HistorialdeAlquiler historial);
     Task<HistorialdeAlquiler> ObtenerHistorialPorIdAsync(int idHistorial);
     Task<IEnumerable<HistorialdeAlquiler>> ObtenerTodoElHistorialAsync();
+
 
 }
 

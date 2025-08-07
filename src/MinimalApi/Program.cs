@@ -94,6 +94,19 @@ app.MapPost("/cuentas", async (Cuenta cuenta, IDAO db) =>
     return Results.Created($"/cuentas/{cuenta.Ncuenta}", cuenta);
 });
 
+app.MapGet("/maquinas/disponibles", async (IDAO db) =>
+{
+    var disponibles = await db.ObtenerMaquinaDisponiblesAsync();
+    return Results.Ok(disponibles);
+});
+
+
+
+app.MapGet("/maquinas/no-disponibles", async (IDAO db) =>
+{
+    var noDisponibles = await db.ObtenerMaquinaNoDisponiblesesAsync();
+    return Results.Ok(noDisponibles);
+});
 
 
 app.Run();
