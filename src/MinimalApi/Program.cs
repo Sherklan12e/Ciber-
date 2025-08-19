@@ -3,6 +3,7 @@ using MySqlConnector;
 using Scalar.AspNetCore;
 using Ciber.Dapper;
 using Ciber.core;
+using MinimalAPI.DTO;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -37,7 +38,7 @@ if (app.Environment.IsDevelopment())
 app.MapGet("/alquileres", async (IDAO db) =>
 {
     var alquileres = await db.ObtenerTodosLosAlquileresAsync();
-    return Results.Ok(alquileres);
+    return Results.Ok(alquileres.Select(alquileres => new AlquilerDto(alquileres.Tipo, alquileres.CantidadTiempo, alquileres.Pagado )));
 });
 
 app.MapGet("/alquileres/{id}", async (int id, IDAO db) =>
