@@ -15,9 +15,11 @@ public readonly record struct AlquilerAltaDTO(int ncuenta, int nmaquina, int tip
 // Alta maquina 
 public readonly record struct MaquinalAltaDTIO(bool Estado , string Caracteristicas);
 
+// Alta Cuenta 
+public readonly record struct CuentaAltaDTO(string nombre, string pass ,int dni, TimeSpan Horaregistrada);
 
 
 
 
-public readonly record struct HistorialDto(int AlquilerId, DateTime Fecha, string Accion, string Comentario);
-public readonly record struct PostAlquilerDto(int AlquilerId, string Comentario);
+
+
