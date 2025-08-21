@@ -60,7 +60,7 @@ app.MapPost("/alquileres", async (Alquiler alquiler, IDAO db) =>
 app.MapGet("/maquinas", async (IDAO db) =>
 {
     var maquinas = await db.ObtenerTodasLasMaquinasAsync();
-    return Results.Ok(maquinas);
+    return Results.Ok(maquinas.Select(maquina => new MaquinaDto(maquina.Estado, maquina.Caracteristicas)));
 });
 
 app.MapGet("/maquinas/{id}", async (int id, IDAO db) =>
@@ -80,7 +80,7 @@ app.MapPost("/maquinas", async (Maquina maquina, IDAO db) =>
 app.MapGet("/cuentas", async (IDAO db) =>
 {
     var cuentas = await db.ObtenerTodasLasCuentasAsync();
-    return Results.Ok(cuentas);
+    return Results.Ok(cuentas.Select(cuenta => new CuentaDto(cuenta.Nombre, cuenta.Dni, cuenta.HoraRegistrada )) );
 });
 
 app.MapGet("/cuentas/{id}", async (int id, IDAO db) =>
@@ -98,7 +98,7 @@ app.MapPost("/cuentas", async (Cuenta cuenta, IDAO db) =>
 app.MapGet("/maquinas/disponibles", async (IDAO db) =>
 {
     var disponibles = await db.ObtenerMaquinaDisponiblesAsync();
-    return Results.Ok(disponibles);
+    return Results.Ok(disponibles.Select(disponibles => new MaquinaDto(disponibles.Estado , disponibles.Caracteristicas)));
 });
 
 
@@ -106,7 +106,7 @@ app.MapGet("/maquinas/disponibles", async (IDAO db) =>
 app.MapGet("/maquinas/no-disponibles", async (IDAO db) =>
 {
     var noDisponibles = await db.ObtenerMaquinaNoDisponiblesesAsync();
-    return Results.Ok(noDisponibles);
+    return Results.Ok(noDisponibles.Select(noDisponibles=> new MaquinaDto(noDisponibles.Estado ,noDisponibles.Caracteristicas)));
 });
 
 
