@@ -47,10 +47,20 @@ app.MapGet("/alquileres/{id}", async (int id, IDAO db) =>
     return alquiler is not null ? Results.Ok(alquiler) : Results.NotFound();
 });
 
-app.MapPost("/alquileres", async (Alquiler alquiler, IDAO db) =>
+app.MapPost("/alquileres", async (AlquilerAltaDTO alquiler, IDAO db) =>
 {
-    await db.AgregarAlquilerAsync(alquiler,true);
-    return Results.Created($"/alquileres/{alquiler.IdAlquiler}", alquiler);
+
+    Alquiler alquileralta = new Alquiler
+    {
+        Ncuenta = alquiler.ncuenta,
+        Nmaquina = alquiler.nmaquina,
+        Tipo = alquiler.tipo,
+        CantidadTiempo = alquiler.cantidadTiempo,
+        Pagado = alquiler.Pagado
+    };
+
+    await db.AgregarAlquilerAsync(alquileralta, true);
+    return Results.Created($"/alquileres/{alquileralta.IdAlquiler}", alquiler);
 });
 
 
@@ -69,10 +79,15 @@ app.MapGet("/maquinas/{id}", async (int id, IDAO db) =>
     return maquina is not null ? Results.Ok(maquina) : Results.NotFound();
 });
 
-app.MapPost("/maquinas", async (Maquina maquina, IDAO db) =>
+app.MapPost("/maquinas", async (MaquinaDto maquina, IDAO db) =>
 {
-    await db.AgregarMaquinaAsync(maquina);
-    return Results.Created($"/maquinas/{maquina.Nmaquina}", maquina);
+    Maquina maquinaAlta = new Maquina
+    {
+        Estado = maquina.Estado,
+        Caracteristicas = maquina.Caracteristicas
+    };
+    await db.AgregarMaquinaAsync(maquinaAlta);
+    return Results.Created($"/maquinas/{maquinaAlta.Nmaquina}", maquina);
 });
 
 // Cuentas
