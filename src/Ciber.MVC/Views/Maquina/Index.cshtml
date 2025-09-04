@@ -1,0 +1,17 @@
+@using Ciber.core;
+
+@model List<Maquina>
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<div>
+    
+    @foreach (var maquina in Model){
+        <div>
+            <p>@maquina.Caracteristicas</p>
+        </div>
+    }
+</div>
