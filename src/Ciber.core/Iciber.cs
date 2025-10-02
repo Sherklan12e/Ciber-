@@ -31,6 +31,10 @@ public interface IDAO
     HistorialdeAlquiler ObtenerHistorialPorId(int idHistorial);
     IEnumerable<HistorialdeAlquiler> ObtenerTodoElHistorial();
     // Alquilar maquina
+    void FinalizarAlquiler(int idAlquiler, decimal montoPagado);
+    Task FinalizarAlquilerAsync(int idAlquiler, decimal montoPagado);
+    IEnumerable<Alquiler> ObtenerAlquileresActivos();
+    Task<IEnumerable<Alquiler>> ObtenerAlquileresActivosAsync();
  
     // Métodos asíncronos
     Task AgregarCuentaAsync(Cuenta cuenta);

@@ -1,0 +1,117 @@
+@model Ciber.core.Alquiler
+
+@{
+    ViewData["Title"] = "Detalles del Alquiler";
+}
+
+<div class="row">
+    <div class="col-12">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1 class="display-6 text-primary">
+                <i class="fas fa-clock me-2"></i>Detalles del Alquiler
+            </h1>
+            <a asp-action="Index" class="btn btn-outline-secondary">
+                <i class="fas fa-arrow-left me-2"></i>Volver a la Lista
+            </a>
+        </div>
+    </div>
+</div>
+
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header bg-info text-white">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-clock me-2"></i>Información del Alquiler #@Model.IdAlquiler
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label fw-bold">
+                            <i class="fas fa-hashtag me-1"></i>ID de Alquiler:
+                        </label>
+                        <p class="form-control-plaintext">
+                            <span class="badge bg-primary fs-6">@Model.IdAlquiler</span>
+                        </p>
+                    </div>
+                    
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label fw-bold">
+                            <i class="fas fa-tag me-1"></i>Tipo de Alquiler:
+                        </label>
+                        <p class="form-control-plaintext">
+                            <span class="badge bg-secondary fs-6">Tipo @Model.Tipo</span>
+                        </p>
+                    </div>
+                </div>
+                
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label fw-bold">
+                            <i class="fas fa-user me-1"></i>Cuenta:
+                        </label>
+                        <p class="form-control-plaintext">
+                            <span class="badge bg-info fs-6">@Model.Ncuenta</span>
+                        </p>
+                    </div>
+                    
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label fw-bold">
+                            <i class="fas fa-desktop me-1"></i>Máquina:
+                        </label>
+                        <p class="form-control-plaintext">
+                            <span class="badge bg-success fs-6">@Model.Nmaquina</span>
+                        </p>
+                    </div>
+                </div>
+                
+                @if (Model.CantidadTiempo.HasValue)
+                {
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label fw-bold">
+                                <i class="fas fa-clock me-1"></i>Cantidad de Tiempo:
+                            </label>
+                            <p class="form-control-plaintext fs-5">
+                                <i class="fas fa-clock me-1 text-muted"></i>@Model.CantidadTiempo.Value.ToString(@"hh\:mm")
+                            </p>
+                        </div>
+                    </div>
+                }
+                
+                @if (Model.Pagado.HasValue)
+                {
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label fw-bold">
+                                <i class="fas fa-dollar-sign me-1"></i>Estado de Pago:
+                            </label>
+                            <p class="form-control-plaintext">
+                                @if (Model.Pagado.Value)
+                                {
+                                    <span class="badge bg-success fs-6">
+                                        <i class="fas fa-check me-1"></i>Pagado
+                                    </span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-warning fs-6">
+                                        <i class="fas fa-times me-1"></i>Pendiente
+                                    </span>
+                                }
+                            </p>
+                        </div>
+                    </div>
+                }
+            </div>
+            <div class="card-footer">
+                <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                    <a asp-action="Index" class="btn btn-secondary">
+                        <i class="fas fa-list me-2"></i>Volver a la Lista
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

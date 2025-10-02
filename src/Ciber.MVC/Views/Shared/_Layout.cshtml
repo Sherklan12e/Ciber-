@@ -1,19 +1,22 @@
 ﻿<!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - Ciber.MVC</title>
+    <title>@ViewData["Title"] - Sistema Ciber</title>
     <script type="importmap"></script>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/Ciber.MVC.styles.css" asp-append-version="true" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
 </head>
 <body>
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-dark bg-primary border-bottom box-shadow mb-3">
             <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">Ciber.MVC</a>
+                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">
+                    <i class="fas fa-desktop me-2"></i>Sistema Ciber
+                </a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
@@ -21,25 +24,77 @@
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                            <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Index">
+                                <i class="fas fa-home me-1"></i>Dashboard
+                            </a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="cuentasDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="fas fa-users me-1"></i>Cuentas
+                            </a>
+                            <ul class="dropdown-menu" aria-labelledby="cuentasDropdown">
+                                <li><a class="dropdown-item" asp-controller="Cuenta" asp-action="Index"><i class="fas fa-list me-2"></i>Ver Todas</a></li>
+                                <li><a class="dropdown-item" asp-controller="Cuenta" asp-action="Create"><i class="fas fa-plus me-2"></i>Crear Nueva</a></li>
+                            </ul>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="maquinasDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="fas fa-desktop me-1"></i>Máquinas
+                            </a>
+                            <ul class="dropdown-menu" aria-labelledby="maquinasDropdown">
+                                <li><a class="dropdown-item" asp-controller="Maquina" asp-action="Index"><i class="fas fa-list me-2"></i>Ver Todas</a></li>
+                                <li><a class="dropdown-item" asp-controller="Maquina" asp-action="Create"><i class="fas fa-plus me-2"></i>Crear Nueva</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item" asp-controller="Maquina" asp-action="Disponibles"><i class="fas fa-check-circle me-2"></i>Disponibles</a></li>
+                                <li><a class="dropdown-item" asp-controller="Maquina" asp-action="Ocupadas"><i class="fas fa-times-circle me-2"></i>Ocupadas</a></li>
+                            </ul>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="alquileresDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="fas fa-clock me-1"></i>Alquileres
+                            </a>
+                            <ul class="dropdown-menu" aria-labelledby="alquileresDropdown">
+                                <li><a class="dropdown-item" asp-controller="Alquiler" asp-action="Index"><i class="fas fa-list me-2"></i>Ver Todos</a></li>
+                                <li><a class="dropdown-item" asp-controller="Alquiler" asp-action="Create"><i class="fas fa-plus me-2"></i>Crear Nuevo</a></li>
+                            </ul>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="historialDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="fas fa-history me-1"></i>Historial
+                            </a>
+                            <ul class="dropdown-menu" aria-labelledby="historialDropdown">
+                                <li><a class="dropdown-item" asp-controller="Historial" asp-action="Index"><i class="fas fa-list me-2"></i>Ver Todo</a></li>
+                                <li><a class="dropdown-item" asp-controller="Historial" asp-action="Create"><i class="fas fa-plus me-2"></i>Agregar Registro</a></li>
+                            </ul>
                         </li>
                     </ul>
                 </div>
             </div>
         </nav>
     </header>
-    <div class="container">
+    <div class="container-fluid">
         <main role="main" class="pb-3">
+            @if (TempData["SuccessMessage"] != null)
+            {
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    <i class="fas fa-check-circle me-2"></i>@TempData["SuccessMessage"]
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            }
+            @if (TempData["ErrorMessage"] != null)
+            {
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <i class="fas fa-exclamation-circle me-2"></i>@TempData["ErrorMessage"]
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            }
             @RenderBody()
         </main>
     </div>
 
     <footer class="border-top footer text-muted">
         <div class="container">
-            &copy; 2025 - Ciber.MVC - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+            &copy; 2024 - Sistema Ciber - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacidad</a>
         </div>
     </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>

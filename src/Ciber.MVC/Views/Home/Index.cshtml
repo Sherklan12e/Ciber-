@@ -1,8 +1,185 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Dashboard";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="row">
+    <div class="col-12">
+        <h1 class="display-4 text-primary mb-4">
+            <i class="fas fa-tachometer-alt me-3"></i>Dashboard del Sistema Ciber
+        </h1>
+    </div>
+</div>
+
+<div class="row mb-4">
+    <div class="col-md-3 mb-3">
+        <div class="card bg-primary text-white h-100">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <h4 class="card-title">@ViewBag.TotalCuentas</h4>
+                        <p class="card-text">Total Cuentas</p>
+                    </div>
+                    <div class="align-self-center">
+                        <i class="fas fa-users fa-2x"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer">
+                <a asp-controller="Cuenta" asp-action="Index" class="text-white text-decoration-none">
+                    <i class="fas fa-eye me-1"></i>Ver Todas
+                </a>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-3 mb-3">
+        <div class="card bg-success text-white h-100">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <h4 class="card-title">@ViewBag.MaquinasDisponibles</h4>
+                        <p class="card-text">Máquinas Disponibles</p>
+                    </div>
+                    <div class="align-self-center">
+                        <i class="fas fa-check-circle fa-2x"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer">
+                <a asp-controller="Maquina" asp-action="Disponibles" class="text-white text-decoration-none">
+                    <i class="fas fa-eye me-1"></i>Ver Disponibles
+                </a>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-3 mb-3">
+        <div class="card bg-warning text-white h-100">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <h4 class="card-title">@ViewBag.MaquinasOcupadas</h4>
+                        <p class="card-text">Máquinas Ocupadas</p>
+                    </div>
+                    <div class="align-self-center">
+                        <i class="fas fa-times-circle fa-2x"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer">
+                <a asp-controller="Maquina" asp-action="Ocupadas" class="text-white text-decoration-none">
+                    <i class="fas fa-eye me-1"></i>Ver Ocupadas
+                </a>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-3 mb-3">
+        <div class="card bg-info text-white h-100">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <h4 class="card-title">@ViewBag.AlquileresActivos</h4>
+                        <p class="card-text">Alquileres Activos</p>
+                    </div>
+                    <div class="align-self-center">
+                        <i class="fas fa-clock fa-2x"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer">
+                <a asp-controller="Alquiler" asp-action="Index" class="text-white text-decoration-none">
+                    <i class="fas fa-eye me-1"></i>Ver Activos
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6 mb-4">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-desktop me-2"></i>Gestión de Máquinas
+                </h5>
+            </div>
+            <div class="card-body">
+                <p class="card-text">Administra las máquinas del ciber, su estado y características.</p>
+                <div class="d-grid gap-2">
+                    <a asp-controller="Maquina" asp-action="Index" class="btn btn-outline-primary">
+                        <i class="fas fa-list me-2"></i>Ver Todas las Máquinas
+                    </a>
+                    <a asp-controller="Maquina" asp-action="Create" class="btn btn-primary">
+                        <i class="fas fa-plus me-2"></i>Agregar Nueva Máquina
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-6 mb-4">
+        <div class="card">
+            <div class="card-header bg-success text-white">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-users me-2"></i>Gestión de Cuentas
+                </h5>
+            </div>
+            <div class="card-body">
+                <p class="card-text">Administra las cuentas de usuarios del ciber.</p>
+                <div class="d-grid gap-2">
+                    <a asp-controller="Cuenta" asp-action="Index" class="btn btn-outline-success">
+                        <i class="fas fa-list me-2"></i>Ver Todas las Cuentas
+                    </a>
+                    <a asp-controller="Cuenta" asp-action="Create" class="btn btn-success">
+                        <i class="fas fa-plus me-2"></i>Crear Nueva Cuenta
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6 mb-4">
+        <div class="card">
+            <div class="card-header bg-info text-white">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-clock me-2"></i>Gestión de Alquileres
+                </h5>
+            </div>
+            <div class="card-body">
+                <p class="card-text">Administra los alquileres activos y crea nuevos alquileres.</p>
+                <div class="d-grid gap-2">
+                    <a asp-controller="Alquiler" asp-action="Index" class="btn btn-outline-info">
+                        <i class="fas fa-list me-2"></i>Ver Todos los Alquileres
+                    </a>
+                    <a asp-controller="Alquiler" asp-action="Create" class="btn btn-info">
+                        <i class="fas fa-plus me-2"></i>Crear Nuevo Alquiler
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-6 mb-4">
+        <div class="card">
+            <div class="card-header bg-warning text-white">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-history me-2"></i>Historial de Alquileres
+                </h5>
+            </div>
+            <div class="card-body">
+                <p class="card-text">Consulta el historial completo de alquileres realizados.</p>
+                <div class="d-grid gap-2">
+                    <a asp-controller="Historial" asp-action="Index" class="btn btn-outline-warning">
+                        <i class="fas fa-list me-2"></i>Ver Historial Completo
+                    </a>
+                    <a asp-controller="Historial" asp-action="Create" class="btn btn-warning">
+                        <i class="fas fa-plus me-2"></i>Agregar Registro
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>

@@ -1,0 +1,161 @@
+@model Ciber.core.HistorialdeAlquiler
+
+@{
+    ViewData["Title"] = "Detalles del Historial";
+}
+
+<div class="row">
+    <div class="col-12">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1 class="display-6 text-primary">
+                <i class="fas fa-history me-2"></i>Detalles del Historial
+            </h1>
+            <a asp-action="Index" class="btn btn-outline-secondary">
+                <i class="fas fa-arrow-left me-2"></i>Volver al Historial
+            </a>
+        </div>
+    </div>
+</div>
+
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header bg-info text-white">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-history me-2"></i>Información del Registro #@Model.IdHistorial
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label fw-bold">
+                            <i class="fas fa-hashtag me-1"></i>ID de Historial:
+                        </label>
+                        <p class="form-control-plaintext">
+                            <span class="badge bg-primary fs-6">@Model.IdHistorial</span>
+                        </p>
+                    </div>
+                    
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label fw-bold">
+                            <i class="fas fa-calculator me-1"></i>Total a Pagar:
+                        </label>
+                        <p class="form-control-plaintext">
+                            <span class="badge bg-success fs-6">@Model.TotalPagar.ToString("C")</span>
+                        </p>
+                    </div>
+                </div>
+                
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label fw-bold">
+                            <i class="fas fa-money-bill me-1"></i>Monto Pagado:
+                        </label>
+                        <p class="form-control-plaintext">
+                            <span class="badge bg-info fs-6">@Model.MontoPagado.ToString("C")</span>
+                        </p>
+                    </div>
+                    
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label fw-bold">
+                            <i class="fas fa-dollar-sign me-1"></i>Precio por Hora:
+                        </label>
+                        <p class="form-control-plaintext">
+                            <span class="badge bg-warning fs-6">@Model.PrecioPorHora.ToString("C")</span>
+                        </p>
+                    </div>
+                </div>
+                
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label fw-bold">
+                            <i class="fas fa-exclamation-triangle me-1"></i>Monto Pendiente:
+                        </label>
+                        <p class="form-control-plaintext">
+                            @if (Model.MontoPendiente > 0)
+                            {
+                                <span class="badge bg-danger fs-6">@Model.MontoPendiente.ToString("C")</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-success fs-6">
+                                    <i class="fas fa-check me-1"></i>Completamente Pagado
+                                </span>
+                            }
+                        </p>
+                    </div>
+                    
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label fw-bold">
+                            <i class="fas fa-clock me-1"></i>Horas Utilizadas:
+                        </label>
+                        <p class="form-control-plaintext fs-5">
+                            <i class="fas fa-clock me-1 text-muted"></i>@Model.HorasUtilizadas.ToString("F2") horas
+                        </p>
+                    </div>
+                </div>
+                
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label fw-bold">
+                            <i class="fas fa-user me-1"></i>Cuenta:
+                        </label>
+                        <p class="form-control-plaintext">
+                            <span class="badge bg-info fs-6">@Model.Ncuenta</span>
+                        </p>
+                    </div>
+                    
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label fw-bold">
+                            <i class="fas fa-desktop me-1"></i>Máquina:
+                        </label>
+                        <p class="form-control-plaintext">
+                            <span class="badge bg-success fs-6">@Model.Nmaquina</span>
+                        </p>
+                    </div>
+                </div>
+                
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label fw-bold">
+                            <i class="fas fa-play me-1"></i>Fecha de Inicio:
+                        </label>
+                        <p class="form-control-plaintext fs-5">
+                            <i class="fas fa-calendar me-1 text-muted"></i>@Model.FechaInicio.ToString("dd/MM/yyyy HH:mm")
+                        </p>
+                    </div>
+                    
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label fw-bold">
+                            <i class="fas fa-stop me-1"></i>Fecha de Fin:
+                        </label>
+                        <p class="form-control-plaintext fs-5">
+                            <i class="fas fa-calendar me-1 text-muted"></i>@Model.FechaFin.ToString("dd/MM/yyyy HH:mm")
+                        </p>
+                    </div>
+                </div>
+                
+                <div class="row">
+                    <div class="col-12 mb-3">
+                        <label class="form-label fw-bold">
+                            <i class="fas fa-clock me-1"></i>Duración Total:
+                        </label>
+                        <p class="form-control-plaintext fs-5">
+                            @{
+                                var duracion = Model.FechaFin - Model.FechaInicio;
+                            }
+                            <i class="fas fa-clock me-1 text-muted"></i>@duracion.ToString(@"dd\.hh\:mm")
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer">
+                <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                    <a asp-action="Index" class="btn btn-secondary">
+                        <i class="fas fa-list me-2"></i>Volver al Historial
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

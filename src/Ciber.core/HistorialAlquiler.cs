@@ -9,5 +9,11 @@ public class HistorialdeAlquiler
     public DateTime FechaInicio { get; set; }
     public DateTime FechaFin { get; set; }
     public decimal TotalPagar { get; set; }
+    public decimal MontoPagado { get; set; }
+    public decimal PrecioPorHora { get; set; }
+    public TimeSpan DuracionTotal => FechaFin - FechaInicio;
+    public decimal HorasUtilizadas => (decimal)DuracionTotal.TotalHours;
+    public decimal MontoPendiente => TotalPagar - MontoPagado;
+    public bool EstaCompletamentePagado => MontoPendiente <= 0;
 }
 

@@ -1,0 +1,110 @@
+@model Ciber.core.HistorialdeAlquiler
+
+@{
+    ViewData["Title"] = "Agregar Registro al Historial";
+}
+
+<div class="row">
+    <div class="col-12">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1 class="display-6 text-primary">
+                <i class="fas fa-history-plus me-2"></i>Agregar Registro al Historial
+            </h1>
+            <a asp-action="Index" class="btn btn-outline-secondary">
+                <i class="fas fa-arrow-left me-2"></i>Volver al Historial
+            </a>
+        </div>
+    </div>
+</div>
+
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header bg-success text-white">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-history-plus me-2"></i>Información del Registro
+                </h5>
+            </div>
+            <div class="card-body">
+                <form asp-action="Create">
+                    <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
+                    
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="Ncuenta" class="form-label">
+                                <i class="fas fa-user me-1"></i>Cuenta
+                            </label>
+                            <select asp-for="Ncuenta" class="form-select">
+                                <option value="">Seleccione una cuenta</option>
+                                @foreach (var cuenta in (ViewBag.Cuentas as IEnumerable<Ciber.core.Cuenta>) ?? Enumerable.Empty<Ciber.core.Cuenta>())
+                                {
+                                    <option value="@cuenta.Ncuenta">@cuenta.Nombre (ID: @cuenta.Ncuenta)</option>
+                                }
+                            </select>
+                            <span asp-validation-for="Ncuenta" class="text-danger"></span>
+                        </div>
+                        
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="Nmaquina" class="form-label">
+                                <i class="fas fa-desktop me-1"></i>Máquina
+                            </label>
+                            <select asp-for="Nmaquina" class="form-select">
+                                <option value="">Seleccione una máquina</option>
+                                @foreach (var maquina in (ViewBag.Maquinas as IEnumerable<Ciber.core.Maquina>) ?? Enumerable.Empty<Ciber.core.Maquina>())
+                                {
+                                    <option value="@maquina.Nmaquina">Máquina #@maquina.Nmaquina</option>
+                                }
+                            </select>
+                            <span asp-validation-for="Nmaquina" class="text-danger"></span>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="FechaInicio" class="form-label">
+                                <i class="fas fa-play me-1"></i>Fecha de Inicio
+                            </label>
+                            <input asp-for="FechaInicio" type="datetime-local" class="form-control" />
+                            <span asp-validation-for="FechaInicio" class="text-danger"></span>
+                        </div>
+                        
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="FechaFin" class="form-label">
+                                <i class="fas fa-stop me-1"></i>Fecha de Fin
+                            </label>
+                            <input asp-for="FechaFin" type="datetime-local" class="form-control" />
+                            <span asp-validation-for="FechaFin" class="text-danger"></span>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="TotalPagar" class="form-label">
+                                <i class="fas fa-dollar-sign me-1"></i>Total a Pagar
+                            </label>
+                            <input asp-for="TotalPagar" type="number" step="0.01" class="form-control" placeholder="0.00" />
+                            <span asp-validation-for="TotalPagar" class="text-danger"></span>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                                <a asp-action="Index" class="btn btn-outline-secondary me-md-2">
+                                    <i class="fas fa-times me-2"></i>Cancelar
+                                </a>
+                                <button type="submit" class="btn btn-success">
+                                    <i class="fas fa-save me-2"></i>Agregar al Historial
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

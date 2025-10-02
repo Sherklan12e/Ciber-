@@ -1,7 +1,5 @@
 using Dapper;
 using MySqlConnector;
-
-// using MySql.Data.MySqlClient;
 using Ciber.core;
 using System.Data;
 namespace Ciber.Dapper
@@ -9,10 +7,12 @@ namespace Ciber.Dapper
 public class ADOD: IDAO
 {
         private readonly IDbConnection _dbConnection;
+        private readonly IPrecioService _precioService;
 
         public ADOD(IDbConnection connectionString)
         {
             _dbConnection = connectionString;
+            _precioService = new PrecioService();
         }
                                         
        public void AgregarCuenta(Cuenta cuenta)
@@ -60,14 +60,9 @@ public class ADOD: IDAO
 
        public void AgregarMaquina(Maquina maquina)
         {
-            var parameters = new DynamicParameters();
-            parameters.Add("uNmaquina", dbType: DbType.Int32, direction: ParameterDirection.Output);
-            parameters.Add("unestado", maquina.Estado);
-            parameters.Add("UnaCaracteristicas", maquina.Caracteristicas);
-
-            _dbConnection.Execute("Maquinas", parameters, commandType: CommandType.StoredProcedure);
-
-            maquina.Nmaquina = parameters.Get<int>("uNmaquina");
+            var sql = "INSERT INTO Maquina (estado, caracteristicas, precioPorHora, tipoMaquina) VALUES (@Estado, @Caracteristicas, @PrecioPorHora, @TipoMaquina); SELECT LAST_INSERT_ID();";
+            var id = _dbConnection.QuerySingle<int>(sql, maquina);
+            maquina.Nmaquina = id;
         }
 
 
@@ -80,7 +75,7 @@ public class ADOD: IDAO
 
         public void ActualizarMaquina(Maquina maquina)
         {
-            var sql = "UPDATE Maquina SET estado = @Estado, caracteristicas = @Caracteristicas WHERE Nmaquina = @Nmaquina";
+            var sql = "UPDATE Maquina SET estado = @Estado, caracteristicas = @Caracteristicas, precioPorHora = @PrecioPorHora, tipoMaquina = @TipoMaquina WHERE Nmaquina = @Nmaquina";
             _dbConnection.Execute(sql, maquina);
         }
 
@@ -106,24 +101,25 @@ public class ADOD: IDAO
 
        public void AgregarAlquiler(Alquiler alquiler, bool tipoAlquiler)
         {
-            var procedureName = tipoAlquiler ? "alquilarMaquina2" : "alquilarMaquina1";
-            var parameters = new DynamicParameters();
-            parameters.Add("unNcuenta", alquiler.Ncuenta);
-            parameters.Add("unNmaquina", alquiler.Nmaquina);
-
-            if (tipoAlquiler)
+            // Obtener el precio de la máquina
+            var maquina = ObtenerMaquinaPorId(alquiler.Nmaquina);
+            alquiler.PrecioPorHora = maquina.PrecioPorHora;
+            
+            // Calcular el total si es tipo 2 (tiempo definido)
+            if (tipoAlquiler && alquiler.CantidadTiempo.HasValue)
             {
-                parameters.Add("tcantidad", alquiler.CantidadTiempo);
-                parameters.Add("pagadood", alquiler.Pagado);
+                alquiler.TotalAPagar = _precioService.CalcularPrecioTotal(alquiler.CantidadTiempo.Value, alquiler.PrecioPorHora);
             }
-
-            // Añade el parametro de salida para el ID
-            parameters.Add("nIdAlquiler", dbType: DbType.Int32, direction: ParameterDirection.Output);
-
-            _dbConnection.Execute(procedureName, parameters, commandType: CommandType.StoredProcedure);
-
-            // Asigna el ID obtenido al alquiler
-            alquiler.IdAlquiler = parameters.Get<int>("nIdAlquiler");
+            
+            var sql = @"INSERT INTO Alquiler (Ncuenta, Nmaquina, tipo, cantidadTiempo, pagado, fechaInicio, precioPorHora, totalAPagar, montoPagado) 
+                       VALUES (@Ncuenta, @Nmaquina, @Tipo, @CantidadTiempo, @Pagado, @FechaInicio, @PrecioPorHora, @TotalAPagar, @MontoPagado); 
+                       SELECT LAST_INSERT_ID();";
+            
+            var id = _dbConnection.QuerySingle<int>(sql, alquiler);
+            alquiler.IdAlquiler = id;
+            
+            // Marcar la máquina como ocupada
+            ActualizarEstadoMaquina(alquiler.Nmaquina, false);
         }
 
 
@@ -148,13 +144,13 @@ public class ADOD: IDAO
 
         public void AgregarHistorial(HistorialdeAlquiler historial)
         {
-            var sql = "INSERT INTO HistorialAlquiler (Ncuenta, Nmaquina, FechaInicio, FechaFin, TotalPagara) VALUES (@Ncuenta, @Nmaquina, @FechaInicio, @FechaFin, @TotalPagara)";
+            var sql = "INSERT INTO HistorialdeAlquiler (Ncuenta, Nmaquina, fechaInicio, fechaFin, TotalPagar) VALUES (@Ncuenta, @Nmaquina, @FechaInicio, @FechaFin, @TotalPagar)";
             _dbConnection.Execute(sql, historial);
         }
 
         public HistorialdeAlquiler ObtenerHistorialPorId(int idHistorial)
         {
-            var sql = "SELECT * FROM HistorialAlquiler WHERE idHistorial = @IdHistorial";
+            var sql = "SELECT * FROM HistorialdeAlquiler WHERE idHistorial = @IdHistorial";
             return _dbConnection.QueryFirstOrDefault<HistorialdeAlquiler>(sql, new { IdHistorial = idHistorial });
         }
        
@@ -162,7 +158,7 @@ public class ADOD: IDAO
         public IEnumerable<HistorialdeAlquiler> ObtenerTodoElHistorial()
 
         {
-            var sql = "SELECT * FROM HistorialAlquiler";
+            var sql = "SELECT * FROM HistorialdeAlquiler";
             return _dbConnection.Query<HistorialdeAlquiler>(sql);
         }
         
@@ -247,18 +243,27 @@ public class ADOD: IDAO
 
         public async Task AgregarAlquilerAsync(Alquiler alquiler, bool tipoAlquiler)
         {
-            var procedureName = tipoAlquiler ? "alquilarMaquina2" : "alquilarMaquina1";
-            var parameters = new DynamicParameters();
-            parameters.Add("unNcuenta", alquiler.Ncuenta);
-            parameters.Add("unNmaquina", alquiler.Nmaquina);
-            if (tipoAlquiler)
+            // Obtener precio de la máquina y setear en el alquiler
+            var maquina = await ObtenerMaquinaPorIdAsync(alquiler.Nmaquina);
+            alquiler.PrecioPorHora = maquina.PrecioPorHora;
+
+            // Si es tipo 2 (cantidad de tiempo definida), calcular el total
+            if (tipoAlquiler && alquiler.CantidadTiempo.HasValue)
             {
-                parameters.Add("tcantidad", alquiler.CantidadTiempo);
-                parameters.Add("pagadood", alquiler.Pagado);
+                var horasRedondeadas = Math.Ceiling(alquiler.CantidadTiempo.Value.TotalHours);
+                alquiler.TotalAPagar = (decimal)horasRedondeadas * alquiler.PrecioPorHora;
             }
-            parameters.Add("nIdAlquiler", dbType: DbType.Int32, direction: ParameterDirection.Output);
-            await _dbConnection.ExecuteAsync(procedureName, parameters, commandType: CommandType.StoredProcedure);
-            alquiler.IdAlquiler = parameters.Get<int>("nIdAlquiler");
+
+            var sql = @"INSERT INTO Alquiler 
+                        (Ncuenta, Nmaquina, tipo, cantidadTiempo, pagado, fechaInicio, precioPorHora, totalAPagar, montoPagado)
+                        VALUES (@Ncuenta, @Nmaquina, @Tipo, @CantidadTiempo, @Pagado, @FechaInicio, @PrecioPorHora, @TotalAPagar, @MontoPagado);
+                        SELECT LAST_INSERT_ID();";
+
+            var id = await _dbConnection.QuerySingleAsync<int>(sql, alquiler);
+            alquiler.IdAlquiler = id;
+
+            // Marcar máquina como ocupada
+            await ActualizarEstadoMaquinaAsync(alquiler.Nmaquina, false);
         }
 
         public async Task<Alquiler> ObtenerAlquilerPorIdAsync(int idAlquiler)
@@ -281,19 +286,19 @@ public class ADOD: IDAO
 
         public async Task AgregarHistorialAsync(HistorialdeAlquiler historial)
         {
-            var sql = "INSERT INTO HistorialAlquiler (Ncuenta, Nmaquina, FechaInicio, FechaFin, TotalPagara) VALUES (@Ncuenta, @Nmaquina, @FechaInicio, @FechaFin, @TotalPagara)";
+            var sql = "INSERT INTO HistorialdeAlquiler (Ncuenta, Nmaquina, fechaInicio, fechaFin, TotalPagar) VALUES (@Ncuenta, @Nmaquina, @FechaInicio, @FechaFin, @TotalPagar)";
             await _dbConnection.ExecuteAsync(sql, historial);
         }
 
         public async Task<HistorialdeAlquiler> ObtenerHistorialPorIdAsync(int idHistorial)
         {
-            var sql = "SELECT * FROM HistorialAlquiler WHERE idHistorial = @IdHistorial";
+            var sql = "SELECT * FROM HistorialdeAlquiler WHERE idHistorial = @IdHistorial";
             return await _dbConnection.QueryFirstOrDefaultAsync<HistorialdeAlquiler>(sql, new { IdHistorial = idHistorial });
         }
 
         public async Task<IEnumerable<HistorialdeAlquiler>> ObtenerTodoElHistorialAsync()
         {
-            var sql = "SELECT * FROM HistorialAlquiler";
+            var sql = "SELECT * FROM HistorialdeAlquiler";
             return await _dbConnection.QueryAsync<HistorialdeAlquiler>(sql);
         }
         public async Task<IEnumerable<Maquina>> ObtenerMaquinaDisponiblesAsync()
@@ -306,6 +311,108 @@ public class ADOD: IDAO
         {
             var sql = "SELECT * FROM Maquina WHERE NOT estado";
             return await _dbConnection.QueryAsync<Maquina>(sql);
+        }
+
+        // Métodos auxiliares
+        private void ActualizarEstadoMaquina(int nmaquina, bool estado)
+        {
+            var sql = "UPDATE Maquina SET estado = @Estado WHERE Nmaquina = @Nmaquina";
+            _dbConnection.Execute(sql, new { Estado = estado, Nmaquina = nmaquina });
+        }
+
+        // Nuevos métodos para la lógica mejorada
+        public void FinalizarAlquiler(int idAlquiler, decimal montoPagado)
+        {
+            var alquiler = ObtenerAlquilerPorId(idAlquiler);
+            if (alquiler != null)
+            {
+                var fechaFin = DateTime.Now;
+                var totalAPagar = _precioService.CalcularPrecioTotal(alquiler.FechaInicio, fechaFin, alquiler.PrecioPorHora);
+                
+                var sql = @"UPDATE Alquiler SET fechaFin = @FechaFin, totalAPagar = @TotalAPagar, montoPagado = @MontoPagado, pagado = @Pagado 
+                           WHERE idAlquiler = @IdAlquiler";
+                
+                _dbConnection.Execute(sql, new { 
+                    FechaFin = fechaFin, 
+                    TotalAPagar = totalAPagar, 
+                    MontoPagado = montoPagado,
+                    Pagado = montoPagado >= totalAPagar,
+                    IdAlquiler = idAlquiler 
+                });
+                
+                // Liberar la máquina
+                ActualizarEstadoMaquina(alquiler.Nmaquina, true);
+                
+                // Agregar al historial
+                var historial = new HistorialdeAlquiler
+                {
+                    Ncuenta = alquiler.Ncuenta,
+                    Nmaquina = alquiler.Nmaquina,
+                    FechaInicio = alquiler.FechaInicio,
+                    FechaFin = fechaFin,
+                    TotalPagar = totalAPagar,
+                    MontoPagado = montoPagado,
+                    PrecioPorHora = alquiler.PrecioPorHora
+                };
+                
+                AgregarHistorial(historial);
+            }
+        }
+
+        public async Task FinalizarAlquilerAsync(int idAlquiler, decimal montoPagado)
+        {
+            var alquiler = await ObtenerAlquilerPorIdAsync(idAlquiler);
+            if (alquiler != null)
+            {
+                var fechaFin = DateTime.Now;
+                var totalAPagar = _precioService.CalcularPrecioTotal(alquiler.FechaInicio, fechaFin, alquiler.PrecioPorHora);
+                
+                var sql = @"UPDATE Alquiler SET fechaFin = @FechaFin, totalAPagar = @TotalAPagar, montoPagado = @MontoPagado, pagado = @Pagado 
+                           WHERE idAlquiler = @IdAlquiler";
+                
+                await _dbConnection.ExecuteAsync(sql, new { 
+                    FechaFin = fechaFin, 
+                    TotalAPagar = totalAPagar, 
+                    MontoPagado = montoPagado,
+                    Pagado = montoPagado >= totalAPagar,
+                    IdAlquiler = idAlquiler 
+                });
+                
+                // Liberar la máquina
+                await ActualizarEstadoMaquinaAsync(alquiler.Nmaquina, true);
+                
+                // Agregar al historial
+                var historial = new HistorialdeAlquiler
+                {
+                    Ncuenta = alquiler.Ncuenta,
+                    Nmaquina = alquiler.Nmaquina,
+                    FechaInicio = alquiler.FechaInicio,
+                    FechaFin = fechaFin,
+                    TotalPagar = totalAPagar,
+                    MontoPagado = montoPagado,
+                    PrecioPorHora = alquiler.PrecioPorHora
+                };
+                
+                await AgregarHistorialAsync(historial);
+            }
+        }
+
+        public IEnumerable<Alquiler> ObtenerAlquileresActivos()
+        {
+            var sql = "SELECT * FROM Alquiler WHERE fechaFin IS NULL";
+            return _dbConnection.Query<Alquiler>(sql);
+        }
+
+        public async Task<IEnumerable<Alquiler>> ObtenerAlquileresActivosAsync()
+        {
+            var sql = "SELECT * FROM Alquiler WHERE fechaFin IS NULL";
+            return await _dbConnection.QueryAsync<Alquiler>(sql);
+        }
+
+        private async Task ActualizarEstadoMaquinaAsync(int nmaquina, bool estado)
+        {
+            var sql = "UPDATE Maquina SET estado = @Estado WHERE Nmaquina = @Nmaquina";
+            await _dbConnection.ExecuteAsync(sql, new { Estado = estado, Nmaquina = nmaquina });
         }
 
     }   
