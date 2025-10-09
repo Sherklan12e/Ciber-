@@ -1,109 +1,79 @@
-@model Ciber.core.Alquiler
-
+@model Ciber.MVC.Controllers.AlquilerViewModel
 @{
-    ViewData["Title"] = "Crear Nuevo Alquiler";
+    ViewData["Title"] = "Nuevo Alquiler";
 }
-
-<div class="row">
-    <div class="col-12">
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <h1 class="display-6 text-primary">
-                <i class="fas fa-clock-plus me-2"></i>Crear Nuevo Alquiler
-            </h1>
-            <a asp-action="Index" class="btn btn-outline-secondary">
-                <i class="fas fa-arrow-left me-2"></i>Volver a la Lista
-            </a>
-        </div>
-    </div>
-</div>
 
 <div class="row justify-content-center">
     <div class="col-md-8">
         <div class="card">
-            <div class="card-header bg-success text-white">
-                <h5 class="card-title mb-0">
-                    <i class="fas fa-clock-plus me-2"></i>Información del Alquiler
-                </h5>
+            <div class="card-header">
+                <h4><i class="fas fa-plus"></i> @ViewData["Title"]</h4>
             </div>
             <div class="card-body">
                 <form asp-action="Create">
-                    <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
-                    
                     <div class="row">
-                        <div class="col-md-6 mb-3">
-                            <label asp-for="Ncuenta" class="form-label">
-                                <i class="fas fa-user me-1"></i>Cuenta
-                            </label>
-                            <select asp-for="Ncuenta" class="form-select">
-                                <option value="">Seleccione una cuenta</option>
-                                @foreach (var cuenta in (ViewBag.Cuentas as IEnumerable<Ciber.core.Cuenta>) ?? Enumerable.Empty<Ciber.core.Cuenta>())
-                                {
-                                    <option value="@cuenta.Ncuenta">@cuenta.Nombre (ID: @cuenta.Ncuenta)</option>
-                                }
-                            </select>
-                            <span asp-validation-for="Ncuenta" class="text-danger"></span>
-                        </div>
-                        
-                        <div class="col-md-6 mb-3">
-                            <label asp-for="Nmaquina" class="form-label">
-                                <i class="fas fa-desktop me-1"></i>Máquina
-                            </label>
-                            <select asp-for="Nmaquina" class="form-select">
-                                <option value="">Seleccione una máquina</option>
-                                @foreach (var maquina in (ViewBag.Maquinas as IEnumerable<Ciber.core.Maquina>) ?? Enumerable.Empty<Ciber.core.Maquina>())
-                                {
-                                    <option value="@maquina.Nmaquina">Máquina #@maquina.Nmaquina (@(maquina.Estado ? "Disponible" : "Ocupada"))</option>
-                                }
-                            </select>
-                            <span asp-validation-for="Nmaquina" class="text-danger"></span>
-                        </div>
-                    </div>
-                    
-                    <div class="row">
-                        <div class="col-md-6 mb-3">
-                            <label asp-for="Tipo" class="form-label">
-                                <i class="fas fa-tag me-1"></i>Tipo de Alquiler
-                            </label>
-                            <select asp-for="Tipo" class="form-select" id="tipoAlquiler">
-                                <option value="1">Tipo 1 - Por tiempo específico</option>
-                                <option value="2">Tipo 2 - Por cantidad de tiempo</option>
-                            </select>
-                            <span asp-validation-for="Tipo" class="text-danger"></span>
-                        </div>
-                        
-                        <div class="col-md-6 mb-3" id="cantidadTiempoDiv" style="display: none;">
-                            <label asp-for="CantidadTiempo" class="form-label">
-                                <i class="fas fa-clock me-1"></i>Cantidad de Tiempo
-                            </label>
-                            <input asp-for="CantidadTiempo" type="time" class="form-control" />
-                            <span asp-validation-for="CantidadTiempo" class="text-danger"></span>
-                        </div>
-                    </div>
-                    
-                    <div class="row" id="pagadoDiv" style="display: none;">
-                        <div class="col-md-6 mb-3">
-                            <label asp-for="Pagado" class="form-label">
-                                <i class="fas fa-dollar-sign me-1"></i>Estado de Pago
-                            </label>
-                            <select asp-for="Pagado" class="form-select">
-                                <option value="true">Pagado</option>
-                                <option value="false">Pendiente</option>
-                            </select>
-                            <span asp-validation-for="Pagado" class="text-danger"></span>
-                        </div>
-                    </div>
-                    
-                    <div class="row">
-                        <div class="col-12">
-                            <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-                                <a asp-action="Index" class="btn btn-outline-secondary me-md-2">
-                                    <i class="fas fa-times me-2"></i>Cancelar
-                                </a>
-                                <button type="submit" class="btn btn-success">
-                                    <i class="fas fa-save me-2"></i>Crear Alquiler
-                                </button>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label asp-for="Ncuenta" class="form-label">Cuenta</label>
+                                <select asp-for="Ncuenta" class="form-control" required>
+                                    <option value="">Seleccionar cuenta...</option>
+                                    @foreach (var cuenta in ViewBag.Cuentas)
+                                    {
+                                        <option value="@cuenta.Ncuenta">#@cuenta.Ncuenta - @cuenta.Nombre ($@cuenta.Saldo.ToString("N2"))</option>
+                                    }
+                                </select>
+                                <span asp-validation-for="Ncuenta" class="text-danger"></span>
                             </div>
                         </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label asp-for="Nmaquina" class="form-label">Máquina</label>
+                                <select asp-for="Nmaquina" class="form-control" required>
+                                    <option value="">Seleccionar máquina...</option>
+                                    @foreach (var maquina in ViewBag.MaquinasDisponibles)
+                                    {
+                                        <option value="@maquina.Nmaquina" data-precio="@maquina.PrecioPorHora">
+                                            #@maquina.Nmaquina - @maquina.Caracteristicas ($@maquina.PrecioPorHora.ToString("N2")/hora)
+                                        </option>
+                                    }
+                                </select>
+                                <span asp-validation-for="Nmaquina" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Tipo de Alquiler</label>
+                        <div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" asp-for="TipoAlquiler" value="false" id="tipoLibre" checked>
+                                <label class="form-check-label" for="tipoLibre">
+                                    Libre (hasta agotar saldo)
+                                </label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" asp-for="TipoAlquiler" value="true" id="tipoDefinido">
+                                <label class="form-check-label" for="tipoDefinido">
+                                    Tiempo Definido
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="tiempoContratadoGroup" class="mb-3" style="display: none;">
+                        <label asp-for="TiempoContratado" class="form-label">Tiempo Contratado</label>
+                        <input asp-for="TiempoContratado" type="time" class="form-control" step="1">
+                        <small class="text-muted">Seleccione la duración del alquiler (formato HH:MM:SS)</small>
+                        <span asp-validation-for="TiempoContratado" class="text-danger"></span>
+                    </div>
+
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                        <a href="@Url.Action("Activos")" class="btn btn-secondary me-md-2">
+                            <i class="fas fa-times"></i> Cancelar
+                        </a>
+                        <button type="submit" class="btn btn-success">
+                            <i class="fas fa-play"></i> Iniciar Alquiler
+                        </button>
                     </div>
                 </form>
             </div>
@@ -115,18 +85,24 @@
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
     
     <script>
-        document.getElementById('tipoAlquiler').addEventListener('change', function() {
-            var tipo = this.value;
-            var cantidadDiv = document.getElementById('cantidadTiempoDiv');
-            var pagadoDiv = document.getElementById('pagadoDiv');
-            
-            if (tipo === '2') {
-                cantidadDiv.style.display = 'block';
-                pagadoDiv.style.display = 'block';
-            } else {
-                cantidadDiv.style.display = 'none';
-                pagadoDiv.style.display = 'none';
+        document.addEventListener('DOMContentLoaded', function() {
+            const tipoLibre = document.getElementById('tipoLibre');
+            const tipoDefinido = document.getElementById('tipoDefinido');
+            const tiempoGroup = document.getElementById('tiempoContratadoGroup');
+
+            function toggleTiempoGroup() {
+                if (tipoDefinido.checked) {
+                    tiempoGroup.style.display = 'block';
+                } else {
+                    tiempoGroup.style.display = 'none';
+                }
             }
+
+            tipoLibre.addEventListener('change', toggleTiempoGroup);
+            tipoDefinido.addEventListener('change', toggleTiempoGroup);
+            
+            // Inicializar
+            toggleTiempoGroup();
         });
     </script>
 }

@@ -1,93 +1,68 @@
-@model Ciber.core.Maquina
-
+@model Maquina
 @{
-    ViewData["Title"] = "Agregar Nueva Máquina";
+    ViewData["Title"] = "Crear Nueva Máquina";
 }
-
-<div class="row">
-    <div class="col-12">
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <h1 class="display-6 text-primary">
-                <i class="fas fa-desktop-plus me-2"></i>Agregar Nueva Máquina
-            </h1>
-            <a asp-action="Index" class="btn btn-outline-secondary">
-                <i class="fas fa-arrow-left me-2"></i>Volver a la Lista
-            </a>
-        </div>
-    </div>
-</div>
 
 <div class="row justify-content-center">
     <div class="col-md-8">
         <div class="card">
-            <div class="card-header bg-success text-white">
-                <h5 class="card-title mb-0">
-                    <i class="fas fa-desktop-plus me-2"></i>Información de la Máquina
-                </h5>
+            <div class="card-header">
+                <h4><i class="fas fa-desktop"></i> @ViewData["Title"]</h4>
             </div>
             <div class="card-body">
                 <form asp-action="Create">
-                    <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
-                    
                     <div class="row">
-                        <div class="col-md-6 mb-3">
-                            <label asp-for="Estado" class="form-label">
-                                <i class="fas fa-toggle-on me-1"></i>Estado Inicial
-                            </label>
-                            <select asp-for="Estado" class="form-select">
-                                <option value="true">Disponible</option>
-                                <option value="false">Ocupada</option>
-                            </select>
-                            <span asp-validation-for="Estado" class="text-danger"></span>
-                        </div>
-                        
-                        <div class="col-md-6 mb-3">
-                            <label asp-for="TipoMaquina" class="form-label">
-                                <i class="fas fa-tag me-1"></i>Tipo de Máquina
-                            </label>
-                            <select asp-for="TipoMaquina" class="form-select">
-                                <option value="Básica">Básica</option>
-                                <option value="Estándar">Estándar</option>
-                                <option value="Gaming">Gaming</option>
-                                <option value="Premium">Premium</option>
-                                <option value="Elite">Elite</option>
-                            </select>
-                            <span asp-validation-for="TipoMaquina" class="text-danger"></span>
-                        </div>
-                    </div>
-                    
-                    <div class="row">
-                        <div class="col-md-6 mb-3">
-                            <label asp-for="Caracteristicas" class="form-label">
-                                <i class="fas fa-info-circle me-1"></i>Características
-                            </label>
-                            <input asp-for="Caracteristicas" class="form-control" placeholder="Ej: Intel i7, 16GB RAM, GTX 1660" />
-                            <span asp-validation-for="Caracteristicas" class="text-danger"></span>
-                        </div>
-                        
-                        <div class="col-md-6 mb-3">
-                            <label asp-for="PrecioPorHora" class="form-label">
-                                <i class="fas fa-dollar-sign me-1"></i>Precio por Hora
-                            </label>
-                            <div class="input-group">
-                                <span class="input-group-text">$</span>
-                                <input asp-for="PrecioPorHora" type="number" step="0.01" class="form-control" placeholder="5.00" />
-                            </div>
-                            <span asp-validation-for="PrecioPorHora" class="text-danger"></span>
-                        </div>
-                    </div>
-                    
-                    <div class="row">
-                        <div class="col-12">
-                            <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-                                <a asp-action="Index" class="btn btn-outline-secondary me-md-2">
-                                    <i class="fas fa-times me-2"></i>Cancelar
-                                </a>
-                                <button type="submit" class="btn btn-success">
-                                    <i class="fas fa-save me-2"></i>Agregar Máquina
-                                </button>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label asp-for="Caracteristicas" class="form-label">Características</label>
+                                <input asp-for="Caracteristicas" class="form-control" required 
+                                       placeholder="Ej: Intel i7, 16GB RAM, RTX 3060">
+                                <span asp-validation-for="Caracteristicas" class="text-danger"></span>
                             </div>
                         </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label asp-for="TipoMaquina" class="form-label">Tipo de Máquina</label>
+                                <select asp-for="TipoMaquina" class="form-control" required>
+                                    <option value="">Seleccionar...</option>
+                                    <option value="Gaming">Gaming</option>
+                                    <option value="Estándar">Estándar</option>
+                                    <option value="Básico">Básico</option>
+                                    <option value="Premium">Premium</option>
+                                </select>
+                                <span asp-validation-for="TipoMaquina" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label asp-for="PrecioPorHora" class="form-label">Precio por Hora</label>
+                                <input asp-for="PrecioPorHora" type="number" step="0.01" class="form-control" 
+                                       value="5.00" required>
+                                <span asp-validation-for="PrecioPorHora" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label asp-for="Estado" class="form-label">Estado Inicial</label>
+                                <select asp-for="Estado" class="form-control" required>
+                                    <option value="Disponible">Disponible</option>
+                                    <option value="Mantenimiento">Mantenimiento</option>
+                                </select>
+                                <span asp-validation-for="Estado" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                        <a href="@Url.Action("Index")" class="btn btn-secondary me-md-2">
+                            <i class="fas fa-times"></i> Cancelar
+                        </a>
+                        <button type="submit" class="btn btn-success">
+                            <i class="fas fa-save"></i> Crear Máquina
+                        </button>
                     </div>
                 </form>
             </div>

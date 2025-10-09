@@ -1,76 +1,142 @@
-@model Ciber.core.Cuenta
-
+@model Cuenta
 @{
-    ViewData["Title"] = "Detalles de la Cuenta";
+    ViewData["Title"] = "Detalles de Cuenta";
 }
 
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2><i class="fas fa-user"></i> @ViewData["Title"]</h2>
+    <div>
+        <a href="@Url.Action("Index")" class="btn btn-secondary">
+            <i class="fas fa-arrow-left"></i> Volver
+        </a>
+    </div>
+</div>
+
 <div class="row">
-    <div class="col-12">
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <h1 class="display-6 text-primary">
-                <i class="fas fa-user me-2"></i>Detalles de la Cuenta
-            </h1>
-            <a asp-action="Index" class="btn btn-outline-secondary">
-                <i class="fas fa-arrow-left me-2"></i>Volver a la Lista
-            </a>
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h5>Información de la Cuenta</h5>
+            </div>
+            <div class="card-body">
+                <dl class="row">
+                    <dt class="col-sm-4">ID:</dt>
+                    <dd class="col-sm-8">@Model.Ncuenta</dd>
+
+                    <dt class="col-sm-4">Nombre:</dt>
+                    <dd class="col-sm-8">@Model.Nombre</dd>
+
+                    <dt class="col-sm-4">DNI:</dt>
+                    <dd class="col-sm-8">@Model.Dni</dd>
+
+                    <dt class="col-sm-4">Saldo:</dt>
+                    <dd class="col-sm-8">
+                        <span class="badge bg-@(Model.Saldo > 0 ? "success" : "warning") fs-6">
+                            $@Model.Saldo.ToString("N2")
+                        </span>
+                    </dd>
+
+                    <dt class="col-sm-4">Hora Registro:</dt>
+                    <dd class="col-sm-8">@Model.HoraRegistrada.ToString(@"hh\:mm")</dd>
+
+                    <dt class="col-sm-4">Estado:</dt>
+                    <dd class="col-sm-8">
+                        <span class="badge bg-@(Model.Activa ? "success" : "danger")">
+                            @(Model.Activa ? "Activa" : "Inactiva")
+                        </span>
+                    </dd>
+                </dl>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h5>Acciones</h5>
+            </div>
+            <div class="card-body">
+                <div class="d-grid gap-2">
+                    <a href="@Url.Action("Recargar", new { id = Model.Ncuenta })" 
+                       class="btn btn-success">
+                        <i class="fas fa-money-bill-wave"></i> Recargar Saldo
+                    </a>
+                    <a href="@Url.Action("Edit", new { id = Model.Ncuenta })" 
+                       class="btn btn-warning">
+                        <i class="fas fa-edit"></i> Editar Cuenta
+                    </a>
+                    <a href="@Url.Action("Create", "Alquiler")" 
+                       class="btn btn-primary">
+                        <i class="fas fa-play"></i> Iniciar Alquiler
+                    </a>
+                </div>
+            </div>
         </div>
     </div>
 </div>
 
-<div class="row justify-content-center">
-    <div class="col-md-8">
+<div class="row mt-4">
+    <div class="col-md-6">
         <div class="card">
-            <div class="card-header bg-info text-white">
-                <h5 class="card-title mb-0">
-                    <i class="fas fa-user me-2"></i>Información de la Cuenta #@Model.Ncuenta
-                </h5>
+            <div class="card-header">
+                <h5><i class="fas fa-history"></i> Historial de Alquileres</h5>
             </div>
             <div class="card-body">
-                <div class="row">
-                    <div class="col-md-6 mb-3">
-                        <label class="form-label fw-bold">
-                            <i class="fas fa-hashtag me-1"></i>ID de Cuenta:
-                        </label>
-                        <p class="form-control-plaintext">
-                            <span class="badge bg-primary fs-6">@Model.Ncuenta</span>
-                        </p>
+                @if (ViewBag.Historial != null && ((IEnumerable<dynamic>)ViewBag.Historial).Any())
+                {
+                    <div class="list-group">
+                        @foreach (var historial in ViewBag.Historial)
+                        {
+                            <div class="list-group-item">
+                                <div class="d-flex w-100 justify-content-between">
+                                    <h6 class="mb-1">Máquina @historial.Nmaquina</h6>
+                                    <small>$@(((decimal)historial.TotalPagar).ToString("N2"))</small>
+                                </div>
+                                <p class="mb-1">
+                                    @historial.FechaInicio.ToString("dd/MM/yyyy HH:mm") - 
+                                    @historial.FechaFin.ToString("dd/MM/yyyy HH:mm")
+                                </p>
+                                <small class="text-muted">Duración: @historial.tiempoUsado</small>
+                            </div>
+                        }
                     </div>
-                    
-                    <div class="col-md-6 mb-3">
-                        <label class="form-label fw-bold">
-                            <i class="fas fa-user me-1"></i>Nombre:
-                        </label>
-                        <p class="form-control-plaintext fs-5">@Model.Nombre</p>
-                    </div>
-                </div>
-                
-                <div class="row">
-                    <div class="col-md-6 mb-3">
-                        <label class="form-label fw-bold">
-                            <i class="fas fa-id-card me-1"></i>DNI:
-                        </label>
-                        <p class="form-control-plaintext fs-5">@Model.Dni</p>
-                    </div>
-                    
-                    <div class="col-md-6 mb-3">
-                        <label class="form-label fw-bold">
-                            <i class="fas fa-clock me-1"></i>Hora de Registro:
-                        </label>
-                        <p class="form-control-plaintext fs-5">
-                            <i class="fas fa-clock me-1 text-muted"></i>@Model.HoraRegistrada.ToString(@"hh\:mm")
-                        </p>
-                    </div>
-                </div>
+                }
+                else
+                {
+                    <p class="text-muted">No hay historial de alquileres</p>
+                }
             </div>
-            <div class="card-footer">
-                <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-                    <a asp-action="Edit" asp-route-id="@Model.Ncuenta" class="btn btn-warning me-md-2">
-                        <i class="fas fa-edit me-2"></i>Editar
-                    </a>
-                    <a asp-action="Index" class="btn btn-secondary">
-                        <i class="fas fa-list me-2"></i>Volver a la Lista
-                    </a>
-                </div>
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h5><i class="fas fa-exchange-alt"></i> Transacciones Recientes</h5>
+            </div>
+            <div class="card-body">
+                @if (ViewBag.Transacciones != null && ((IEnumerable<dynamic>)ViewBag.Transacciones).Any())
+                {
+                    <div class="list-group">
+                        @foreach (var transaccion in ViewBag.Transacciones)
+                        {
+                            <div class="list-group-item">
+                                <div class="d-flex w-100 justify-content-between">
+                                    <h6 class="mb-1">@transaccion.tipo</h6>
+                                    <small class="text-@(transaccion.tipo == "Recarga" ? "success" : "danger")">
+                                        @(transaccion.tipo == "Recarga" ? "+" : "-")$@(((decimal)transaccion.monto).ToString("N2"))
+                                    </small>
+                                </div>
+                                <p class="mb-1">@transaccion.descripcion</p>
+                                <small class="text-muted">@transaccion.fecha.ToString("dd/MM/yyyy HH:mm")</small>
+                            </div>
+                        }
+                    </div>
+                }
+                else
+                {
+                    <p class="text-muted">No hay transacciones registradas</p>
+                }
             </div>
         </div>
     </div>

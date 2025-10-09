@@ -13,14 +13,12 @@ namespace Ciber.MVC.Controllers
             _dao = dao;
         }
 
-        // GET: Maquina
         public async Task<IActionResult> Index()
         {
             var maquinas = await _dao.ObtenerTodasLasMaquinasAsync();
             return View(maquinas);
         }
 
-        // GET: Maquina/Details/5
         public async Task<IActionResult> Details(int id)
         {
             var maquina = await _dao.ObtenerMaquinaPorIdAsync(id);
@@ -28,16 +26,18 @@ namespace Ciber.MVC.Controllers
             {
                 return NotFound();
             }
+            
+            var historial = await _dao.ObtenerHistorialPorMaquinaAsync(id);
+            ViewBag.Historial = historial;
+            
             return View(maquina);
         }
 
-        // GET: Maquina/Create
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: Maquina/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(Maquina maquina)
@@ -58,7 +58,6 @@ namespace Ciber.MVC.Controllers
             return View(maquina);
         }
 
-        // GET: Maquina/Edit/5
         public async Task<IActionResult> Edit(int id)
         {
             var maquina = await _dao.ObtenerMaquinaPorIdAsync(id);
@@ -69,7 +68,6 @@ namespace Ciber.MVC.Controllers
             return View(maquina);
         }
 
-        // POST: Maquina/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, Maquina maquina)
@@ -95,46 +93,18 @@ namespace Ciber.MVC.Controllers
             return View(maquina);
         }
 
-        // GET: Maquina/Delete/5
-        public async Task<IActionResult> Delete(int id)
-        {
-            var maquina = await _dao.ObtenerMaquinaPorIdAsync(id);
-            if (maquina == null)
-            {
-                return NotFound();
-            }
-            return View(maquina);
-        }
-
-        // POST: Maquina/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public async Task<IActionResult> CambiarEstado(int id, string estado)
         {
             try
             {
-                await _dao.EliminarMaquinaAsync(id);
-                TempData["SuccessMessage"] = "Máquina eliminada exitosamente.";
+                await _dao.CambiarEstadoMaquinaAsync(id, estado);
+                TempData["SuccessMessage"] = $"Estado cambiado a: {estado}";
             }
             catch (Exception ex)
             {
-                TempData["ErrorMessage"] = $"Error al eliminar la máquina: {ex.Message}";
+                TempData["ErrorMessage"] = $"Error al cambiar estado: {ex.Message}";
             }
             return RedirectToAction(nameof(Index));
-        }
-
-        // GET: Maquina/Disponibles
-        public async Task<IActionResult> Disponibles()
-        {
-            var maquinasDisponibles = await _dao.ObtenerMaquinaDisponiblesAsync();
-            return View("Index", maquinasDisponibles);
-        }
-
-        // GET: Maquina/Ocupadas
-        public async Task<IActionResult> Ocupadas()
-        {
-            var maquinasOcupadas = await _dao.ObtenerMaquinaNoDisponiblesesAsync();
-            return View("Index", maquinasOcupadas);
         }
     }
 }

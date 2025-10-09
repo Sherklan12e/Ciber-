@@ -1,4 +1,4 @@
-@model Ciber.core.Alquiler
+@model Alquiler
 
 @{
     ViewData["Title"] = "Eliminar Alquiler";
@@ -73,44 +73,42 @@
                     </div>
                 </div>
                 
-                @if (Model.CantidadTiempo.HasValue)
+                @if (Model.TiempoContratado.HasValue)
                 {
                     <div class="row">
                         <div class="col-md-6 mb-3">
                             <label class="form-label fw-bold">
-                                <i class="fas fa-clock me-1"></i>Cantidad de Tiempo:
+                                <i class="fas fa-clock me-1"></i>Tiempo Contratado:
                             </label>
                             <p class="form-control-plaintext fs-5">
-                                <i class="fas fa-clock me-1 text-muted"></i>@Model.CantidadTiempo.Value.ToString(@"hh\:mm")
+                                <i class="fas fa-clock me-1 text-muted"></i>@Model.TiempoContratado.Value.ToString(@"hh\:mm")
                             </p>
                         </div>
                     </div>
                 }
                 
-                @if (Model.Pagado.HasValue)
-                {
-                    <div class="row">
-                        <div class="col-md-6 mb-3">
-                            <label class="form-label fw-bold">
-                                <i class="fas fa-dollar-sign me-1"></i>Estado de Pago:
-                            </label>
-                            <p class="form-control-plaintext">
-                                @if (Model.Pagado.Value)
-                                {
-                                    <span class="badge bg-success fs-6">
-                                        <i class="fas fa-check me-1"></i>Pagado
-                                    </span>
-                                }
-                                else
-                                {
-                                    <span class="badge bg-warning fs-6">
-                                        <i class="fas fa-times me-1"></i>Pendiente
-                                    </span>
-                                }
-                            </p>
-                        </div>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label fw-bold">
+                            <i class="fas fa-dollar-sign me-1"></i>Total a Pagar:
+                        </label>
+                        <p class="form-control-plaintext">
+                            <span class="badge bg-success fs-6">
+                                $@Model.TotalAPagar.ToString("N2")
+                            </span>
+                        </p>
                     </div>
-                }
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label fw-bold">
+                            <i class="fas fa-money-bill me-1"></i>Monto Pagado:
+                        </label>
+                        <p class="form-control-plaintext">
+                            <span class="badge bg-info fs-6">
+                                $@Model.MontoPagado.ToString("N2")
+                            </span>
+                        </p>
+                    </div>
+                </div>
             </div>
             <div class="card-footer">
                 <form asp-action="Delete">

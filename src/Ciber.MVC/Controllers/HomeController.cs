@@ -1,56 +1,55 @@
-using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
-using Ciber.MVC.Models;
 using Ciber.core;
 using Ciber.Dapper;
 
-namespace Ciber.MVC.Controllers;
-
-public class HomeController : Controller
+namespace Ciber.MVC.Controllers
 {
-    private readonly IDAO _dao;
-    private readonly ILogger<HomeController> _logger;
-
-    public HomeController(IDAO dao, ILogger<HomeController> logger)
+    public class HomeController : Controller
     {
-        _dao = dao;
-        _logger = logger;
-    }
+        private readonly IDAO _dao;
 
-    public async Task<IActionResult> Index()
-    {
-        try
+        public HomeController(IDAO dao)
         {
-            var cuentas = await _dao.ObtenerTodasLasCuentasAsync();
-            var maquinas = await _dao.ObtenerTodasLasMaquinasAsync();
-            var alquileres = await _dao.ObtenerTodosLosAlquileresAsync();
-            var historial = await _dao.ObtenerTodoElHistorialAsync();
+            _dao = dao;
+        }
 
-            ViewBag.TotalCuentas = cuentas.Count();
-            ViewBag.TotalMaquinas = maquinas.Count();
-            ViewBag.MaquinasDisponibles = maquinas.Count(m => m.Estado);
-            ViewBag.MaquinasOcupadas = maquinas.Count(m => !m.Estado);
-            ViewBag.AlquileresActivos = alquileres.Count();
-            ViewBag.TotalHistorial = historial.Count();
+        public async Task<IActionResult> Index()
+        {
+            var dashboard = new DashboardViewModel
+            {
+                MaquinasDisponibles = await _dao.ObtenerCantidadMaquinasDisponiblesAsync(),
+                AlquileresActivos = (await _dao.ObtenerAlquileresActivosAsync()).Count(),
+                IngresosHoy = await _dao.ObtenerIngresosPorFechaAsync(DateTime.Today),
+                TopMaquinas = await _dao.ObtenerMaquinasMasRentablesAsync()
+            };
+            return View(dashboard);
+        }
 
+        public IActionResult Login()
+        {
             return View();
         }
-        catch (Exception ex)
+
+        [HttpPost]
+        public async Task<IActionResult> Login(string dni, string password)
         {
-            _logger.LogError(ex, "Error al cargar el dashboard");
-            TempData["ErrorMessage"] = "Error al cargar la información del dashboard.";
+            if (await _dao.ValidarCredencialesAsync(dni, password))
+            {
+                // Aquí podrías implementar autenticación
+                TempData["SuccessMessage"] = "Login exitoso";
+                return RedirectToAction("Index");
+            }
+            
+            TempData["ErrorMessage"] = "Credenciales inválidas";
             return View();
         }
     }
 
-    public IActionResult Privacy()
+    public class DashboardViewModel
     {
-        return View();
-    }
-
-    [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-    public IActionResult Error()
-    {
-        return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+        public int MaquinasDisponibles { get; set; }
+        public int AlquileresActivos { get; set; }
+        public decimal IngresosHoy { get; set; }
+        public dynamic? TopMaquinas { get; set; }
     }
 }

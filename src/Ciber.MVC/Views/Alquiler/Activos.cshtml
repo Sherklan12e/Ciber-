@@ -1,0 +1,52 @@
+@model IEnumerable<Alquiler>
+@{
+    ViewData["Title"] = "Alquileres Activos";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2><i class="fas fa-play-circle"></i> @ViewData["Title"]</h2>
+    <a href="@Url.Action("Create")" class="btn btn-primary">
+        <i class="fas fa-plus"></i> Nuevo Alquiler
+    </a>
+</div>
+
+@if (!Model.Any())
+{
+    <div class="alert alert-info">
+        <i class="fas fa-info-circle"></i> No hay alquileres activos en este momento.
+    </div>
+}
+else
+{
+    <div class="row">
+        @foreach (var alquiler in Model)
+        {
+            <div class="col-md-6 mb-3">
+                <div class="card border-warning">
+                    <div class="card-header bg-warning text-dark d-flex justify-content-between align-items-center">
+                        <strong>Alquiler #@alquiler.IdAlquiler</strong>
+                        <span class="badge bg-dark">Activo</span>
+                    </div>
+                    <div class="card-body">
+                        <p><strong>Cuenta:</strong> #@alquiler.Ncuenta</p>
+                        <p><strong>Máquina:</strong> #@alquiler.Nmaquina</p>
+                        <p><strong>Inicio:</strong> @alquiler.FechaInicio.ToString("dd/MM/yyyy HH:mm")</p>
+                        <p><strong>Tiempo Transcurrido:</strong> 
+                           @((DateTime.Now - alquiler.FechaInicio).ToString(@"hh\:mm\:ss"))</p>
+                        <p><strong>Costo Actual:</strong> 
+                           <span class="badge bg-success">$@alquiler.CostoActual.ToString("N2")</span></p>
+                        <p><strong>Tipo:</strong> 
+                           <span class="badge bg-info">@(alquiler.Tipo == 1 ? "Libre" : "Tiempo Definido")</span></p>
+                        
+                        <div class="d-grid gap-2">
+                            <a href="@Url.Action("Finalizar", new { id = alquiler.IdAlquiler })" 
+                               class="btn btn-warning">
+                                <i class="fas fa-stop"></i> Finalizar Alquiler
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}

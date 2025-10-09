@@ -1,184 +1,125 @@
-﻿@{
-    ViewData["Title"] = "Dashboard";
+﻿@model Ciber.MVC.Controllers.DashboardViewModel
+@{
+    ViewData["Title"] = "Dashboard Principal";
 }
 
 <div class="row">
-    <div class="col-12">
-        <h1 class="display-4 text-primary mb-4">
-            <i class="fas fa-tachometer-alt me-3"></i>Dashboard del Sistema Ciber
-        </h1>
-    </div>
-</div>
-
-<div class="row mb-4">
-    <div class="col-md-3 mb-3">
-        <div class="card bg-primary text-white h-100">
+    <div class="col-md-3">
+        <div class="card text-white bg-primary mb-3">
             <div class="card-body">
                 <div class="d-flex justify-content-between">
                     <div>
-                        <h4 class="card-title">@ViewBag.TotalCuentas</h4>
-                        <p class="card-text">Total Cuentas</p>
-                    </div>
-                    <div class="align-self-center">
-                        <i class="fas fa-users fa-2x"></i>
-                    </div>
-                </div>
-            </div>
-            <div class="card-footer">
-                <a asp-controller="Cuenta" asp-action="Index" class="text-white text-decoration-none">
-                    <i class="fas fa-eye me-1"></i>Ver Todas
-                </a>
-            </div>
-        </div>
-    </div>
-    
-    <div class="col-md-3 mb-3">
-        <div class="card bg-success text-white h-100">
-            <div class="card-body">
-                <div class="d-flex justify-content-between">
-                    <div>
-                        <h4 class="card-title">@ViewBag.MaquinasDisponibles</h4>
+                        <h4>@Model.MaquinasDisponibles</h4>
                         <p class="card-text">Máquinas Disponibles</p>
                     </div>
                     <div class="align-self-center">
-                        <i class="fas fa-check-circle fa-2x"></i>
+                        <i class="fas fa-desktop fa-2x"></i>
                     </div>
                 </div>
-            </div>
-            <div class="card-footer">
-                <a asp-controller="Maquina" asp-action="Disponibles" class="text-white text-decoration-none">
-                    <i class="fas fa-eye me-1"></i>Ver Disponibles
-                </a>
             </div>
         </div>
     </div>
     
-    <div class="col-md-3 mb-3">
-        <div class="card bg-warning text-white h-100">
+    <div class="col-md-3">
+        <div class="card text-white bg-success mb-3">
             <div class="card-body">
                 <div class="d-flex justify-content-between">
                     <div>
-                        <h4 class="card-title">@ViewBag.MaquinasOcupadas</h4>
-                        <p class="card-text">Máquinas Ocupadas</p>
+                        <h4>@Model.AlquileresActivos</h4>
+                        <p class="card-text">Alquileres Activos</p>
                     </div>
                     <div class="align-self-center">
-                        <i class="fas fa-times-circle fa-2x"></i>
+                        <i class="fas fa-play-circle fa-2x"></i>
                     </div>
                 </div>
-            </div>
-            <div class="card-footer">
-                <a asp-controller="Maquina" asp-action="Ocupadas" class="text-white text-decoration-none">
-                    <i class="fas fa-eye me-1"></i>Ver Ocupadas
-                </a>
             </div>
         </div>
     </div>
     
-    <div class="col-md-3 mb-3">
-        <div class="card bg-info text-white h-100">
+    <div class="col-md-3">
+        <div class="card text-white bg-warning mb-3">
             <div class="card-body">
                 <div class="d-flex justify-content-between">
                     <div>
-                        <h4 class="card-title">@ViewBag.AlquileresActivos</h4>
-                        <p class="card-text">Alquileres Activos</p>
+                        <h4>$@Model.IngresosHoy.ToString("N2")</h4>
+                        <p class="card-text">Ingresos Hoy</p>
+                    </div>
+                    <div class="align-self-center">
+                        <i class="fas fa-dollar-sign fa-2x"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-3">
+        <div class="card text-white bg-info mb-3">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <h4>@DateTime.Now.ToString("HH:mm")</h4>
+                        <p class="card-text">Hora Actual</p>
                     </div>
                     <div class="align-self-center">
                         <i class="fas fa-clock fa-2x"></i>
                     </div>
                 </div>
             </div>
-            <div class="card-footer">
-                <a asp-controller="Alquiler" asp-action="Index" class="text-white text-decoration-none">
-                    <i class="fas fa-eye me-1"></i>Ver Activos
-                </a>
-            </div>
         </div>
     </div>
 </div>
 
-<div class="row">
-    <div class="col-md-6 mb-4">
+<div class="row mt-4">
+    <div class="col-md-6">
         <div class="card">
-            <div class="card-header bg-primary text-white">
-                <h5 class="card-title mb-0">
-                    <i class="fas fa-desktop me-2"></i>Gestión de Máquinas
-                </h5>
+            <div class="card-header">
+                <h5><i class="fas fa-bolt"></i> Acciones Rápidas</h5>
             </div>
             <div class="card-body">
-                <p class="card-text">Administra las máquinas del ciber, su estado y características.</p>
                 <div class="d-grid gap-2">
-                    <a asp-controller="Maquina" asp-action="Index" class="btn btn-outline-primary">
-                        <i class="fas fa-list me-2"></i>Ver Todas las Máquinas
+                    <a href="@Url.Action("Create", "Alquiler")" class="btn btn-primary">
+                        <i class="fas fa-plus"></i> Nuevo Alquiler
                     </a>
-                    <a asp-controller="Maquina" asp-action="Create" class="btn btn-primary">
-                        <i class="fas fa-plus me-2"></i>Agregar Nueva Máquina
+                    <a href="@Url.Action("Create", "Cuenta")" class="btn btn-success">
+                        <i class="fas fa-user-plus"></i> Nueva Cuenta
+                    </a>
+                    <a href="@Url.Action("Create", "Maquina")" class="btn btn-info">
+                        <i class="fas fa-desktop"></i> Nueva Máquina
+                    </a>
+                    <a href="@Url.Action("Activos", "Alquiler")" class="btn btn-warning">
+                        <i class="fas fa-list"></i> Ver Alquileres Activos
                     </a>
                 </div>
             </div>
         </div>
     </div>
     
-    <div class="col-md-6 mb-4">
+    <div class="col-md-6">
         <div class="card">
-            <div class="card-header bg-success text-white">
-                <h5 class="card-title mb-0">
-                    <i class="fas fa-users me-2"></i>Gestión de Cuentas
-                </h5>
+            <div class="card-header">
+                <h5><i class="fas fa-chart-line"></i> Máquinas Más Rentables</h5>
             </div>
             <div class="card-body">
-                <p class="card-text">Administra las cuentas de usuarios del ciber.</p>
-                <div class="d-grid gap-2">
-                    <a asp-controller="Cuenta" asp-action="Index" class="btn btn-outline-success">
-                        <i class="fas fa-list me-2"></i>Ver Todas las Cuentas
-                    </a>
-                    <a asp-controller="Cuenta" asp-action="Create" class="btn btn-success">
-                        <i class="fas fa-plus me-2"></i>Crear Nueva Cuenta
-                    </a>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<div class="row">
-    <div class="col-md-6 mb-4">
-        <div class="card">
-            <div class="card-header bg-info text-white">
-                <h5 class="card-title mb-0">
-                    <i class="fas fa-clock me-2"></i>Gestión de Alquileres
-                </h5>
-            </div>
-            <div class="card-body">
-                <p class="card-text">Administra los alquileres activos y crea nuevos alquileres.</p>
-                <div class="d-grid gap-2">
-                    <a asp-controller="Alquiler" asp-action="Index" class="btn btn-outline-info">
-                        <i class="fas fa-list me-2"></i>Ver Todos los Alquileres
-                    </a>
-                    <a asp-controller="Alquiler" asp-action="Create" class="btn btn-info">
-                        <i class="fas fa-plus me-2"></i>Crear Nuevo Alquiler
-                    </a>
-                </div>
-            </div>
-        </div>
-    </div>
-    
-    <div class="col-md-6 mb-4">
-        <div class="card">
-            <div class="card-header bg-warning text-white">
-                <h5 class="card-title mb-0">
-                    <i class="fas fa-history me-2"></i>Historial de Alquileres
-                </h5>
-            </div>
-            <div class="card-body">
-                <p class="card-text">Consulta el historial completo de alquileres realizados.</p>
-                <div class="d-grid gap-2">
-                    <a asp-controller="Historial" asp-action="Index" class="btn btn-outline-warning">
-                        <i class="fas fa-list me-2"></i>Ver Historial Completo
-                    </a>
-                    <a asp-controller="Historial" asp-action="Create" class="btn btn-warning">
-                        <i class="fas fa-plus me-2"></i>Agregar Registro
-                    </a>
-                </div>
+                @if (Model.TopMaquinas != null)
+                {
+                    <div class="list-group">
+                        @foreach (var maquina in Model.TopMaquinas)
+                        {
+                            <div class="list-group-item d-flex justify-content-between align-items-center">
+                                <div>
+                                    <strong>@maquina.caracteristicas</strong>
+                                    <br>
+                                    <small class="text-muted">@maquina.tipoMaquina</small>
+                                </div>
+                                <span class="badge bg-primary rounded-pill">$@(((decimal)maquina.IngresosGenerados).ToString("N2"))</span>
+                            </div>
+                        }
+                    </div>
+                }
+                else
+                {
+                    <p class="text-muted">No hay datos disponibles</p>
+                }
             </div>
         </div>
     </div>

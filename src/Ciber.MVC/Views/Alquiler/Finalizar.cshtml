@@ -1,160 +1,45 @@
-@model Ciber.core.Alquiler
-
+@model Alquiler
 @{
     ViewData["Title"] = "Finalizar Alquiler";
 }
 
-<div class="row">
-    <div class="col-12">
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <h1 class="display-6 text-success">
-                <i class="fas fa-stop-circle me-2"></i>Finalizar Alquiler
-            </h1>
-            <a asp-action="Index" class="btn btn-outline-secondary">
-                <i class="fas fa-arrow-left me-2"></i>Volver a la Lista
-            </a>
-        </div>
-    </div>
-</div>
-
 <div class="row justify-content-center">
     <div class="col-md-8">
         <div class="card">
-            <div class="card-header bg-success text-white">
-                <h5 class="card-title mb-0">
-                    <i class="fas fa-stop-circle me-2"></i>Finalizar Alquiler #@Model.IdAlquiler
-                </h5>
+            <div class="card-header bg-warning">
+                <h4><i class="fas fa-stop"></i> @ViewData["Title"]</h4>
             </div>
             <div class="card-body">
-                <div class="alert alert-info" role="alert">
-                    <i class="fas fa-info-circle me-2"></i>
-                    <strong>Información del Alquiler:</strong> Se calculará automáticamente el tiempo utilizado y el total a pagar.
+                <div class="alert alert-info">
+                    <h5>Resumen del Alquiler</h5>
+                    <p class="mb-1"><strong>ID:</strong> #@Model.IdAlquiler</p>
+                    <p class="mb-1"><strong>Cuenta:</strong> #@Model.Ncuenta</p>
+                    <p class="mb-1"><strong>Máquina:</strong> #@Model.Nmaquina</p>
+                    <p class="mb-1"><strong>Inicio:</strong> @Model.FechaInicio.ToString("dd/MM/yyyy HH:mm")</p>
+                    <p class="mb-1"><strong>Tiempo Transcurrido:</strong> @ViewBag.TiempoTranscurrido</p>
+                    <p class="mb-0"><strong>Costo Estimado:</strong> 
+                       <span class="text-success fw-bold">$@ViewBag.CostoActual.ToString("N2")</span></p>
                 </div>
-                
-                <div class="row mb-4">
-                    <div class="col-md-6">
-                        <div class="card bg-light">
-                            <div class="card-body">
-                                <h6 class="card-title">
-                                    <i class="fas fa-clock me-1"></i>Tiempo Transcurrido
-                                </h6>
-                                <p class="card-text fs-4 text-primary">
-                                    @{
-                                        var tiempoTranscurrido = ViewBag.TiempoTranscurrido as TimeSpan? ?? TimeSpan.Zero;
-                                    }
-                                    <strong>@tiempoTranscurrido.ToString(@"hh\:mm\:ss")</strong>
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="card bg-light">
-                            <div class="card-body">
-                                <h6 class="card-title">
-                                    <i class="fas fa-calculator me-1"></i>Total Estimado
-                                </h6>
-                                <p class="card-text fs-4 text-success">
-                                    <strong>@ViewBag.TotalEstimado.ToString("C")</strong>
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="row">
-                    <div class="col-md-6 mb-3">
-                        <label class="form-label fw-bold">
-                            <i class="fas fa-hashtag me-1"></i>ID de Alquiler:
-                        </label>
-                        <p class="form-control-plaintext">
-                            <span class="badge bg-primary fs-6">@Model.IdAlquiler</span>
-                        </p>
-                    </div>
-                    
-                    <div class="col-md-6 mb-3">
-                        <label class="form-label fw-bold">
-                            <i class="fas fa-user me-1"></i>Cuenta:
-                        </label>
-                        <p class="form-control-plaintext">
-                            <span class="badge bg-info fs-6">@Model.Ncuenta</span>
-                        </p>
-                    </div>
-                </div>
-                
-                <div class="row">
-                    <div class="col-md-6 mb-3">
-                        <label class="form-label fw-bold">
-                            <i class="fas fa-desktop me-1"></i>Máquina:
-                        </label>
-                        <p class="form-control-plaintext">
-                            <span class="badge bg-success fs-6">@Model.Nmaquina</span>
-                        </p>
-                    </div>
-                    
-                    <div class="col-md-6 mb-3">
-                        <label class="form-label fw-bold">
-                            <i class="fas fa-dollar-sign me-1"></i>Precio por Hora:
-                        </label>
-                        <p class="form-control-plaintext fs-5">
-                            <span class="badge bg-warning fs-6">@Model.PrecioPorHora.ToString("C")</span>
-                        </p>
-                    </div>
-                </div>
-                
-                <div class="row">
-                    <div class="col-md-6 mb-3">
-                        <label class="form-label fw-bold">
-                            <i class="fas fa-play me-1"></i>Fecha de Inicio:
-                        </label>
-                        <p class="form-control-plaintext fs-5">
-                            <i class="fas fa-calendar me-1 text-muted"></i>@Model.FechaInicio.ToString("dd/MM/yyyy HH:mm")
-                        </p>
-                    </div>
-                    
-                    <div class="col-md-6 mb-3">
-                        <label class="form-label fw-bold">
-                            <i class="fas fa-stop me-1"></i>Fecha de Fin:
-                        </label>
-                        <p class="form-control-plaintext fs-5">
-                            <i class="fas fa-calendar me-1 text-muted"></i>@DateTime.Now.ToString("dd/MM/yyyy HH:mm")
-                        </p>
-                    </div>
-                </div>
-                
-                <hr>
-                
+
                 <form asp-action="Finalizar" method="post">
-                    <input type="hidden" asp-for="IdAlquiler" />
+                    <input type="hidden" name="id" value="@Model.IdAlquiler" />
                     
-                    <div class="row">
-                        <div class="col-md-6 mb-3">
-                            <label for="montoPagado" class="form-label fw-bold">
-                                <i class="fas fa-money-bill me-1"></i>Monto Pagado
-                            </label>
-                            <div class="input-group">
-                                <span class="input-group-text">$</span>
-                                <input type="number" step="0.01" name="montoPagado" id="montoPagado" 
-                                       class="form-control" placeholder="@ViewBag.TotalEstimado" 
-                                       value="@ViewBag.TotalEstimado" required />
-                            </div>
-                            <div class="form-text">
-                                <i class="fas fa-info-circle me-1"></i>
-                                Total estimado: @ViewBag.TotalEstimado.ToString("C")
-                            </div>
+                    <div class="mb-3">
+                        <label for="montoPagado" class="form-label">Monto a Pagar</label>
+                        <input type="number" name="montoPagado" class="form-control" 
+                               step="0.01" value="@ViewBag.CostoActual.ToString("F2")" required>
+                        <div class="form-text">
+                            Ajuste el monto si es necesario. El sistema calculará automáticamente el tiempo real utilizado.
                         </div>
                     </div>
-                    
-                    <div class="row">
-                        <div class="col-12">
-                            <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-                                <a asp-action="Index" class="btn btn-outline-secondary me-md-2">
-                                    <i class="fas fa-times me-2"></i>Cancelar
-                                </a>
-                                <button type="submit" class="btn btn-success">
-                                    <i class="fas fa-stop-circle me-2"></i>Finalizar Alquiler
-                                </button>
-                            </div>
-                        </div>
+
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                        <a href="@Url.Action("Details", new { id = Model.IdAlquiler })" class="btn btn-secondary me-md-2">
+                            <i class="fas fa-times"></i> Cancelar
+                        </a>
+                        <button type="submit" class="btn btn-warning">
+                            <i class="fas fa-stop"></i> Confirmar Finalización
+                        </button>
                     </div>
                 </form>
             </div>

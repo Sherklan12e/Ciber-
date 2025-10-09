@@ -28,6 +28,14 @@ namespace Ciber.MVC.Controllers
             {
                 return NotFound();
             }
+            
+            // Obtener historial de la cuenta
+            var historial = await _dao.ObtenerHistorialPorCuentaAsync(id);
+            var transacciones = await _dao.ObtenerTransaccionesPorCuentaAsync(id);
+            
+            ViewBag.Historial = historial;
+            ViewBag.Transacciones = transacciones;
+            
             return View(cuenta);
         }
 
@@ -46,8 +54,10 @@ namespace Ciber.MVC.Controllers
             {
                 try
                 {
+                    // Asegurar que la hora de registro sea la actual
+                    cuenta.HoraRegistrada = DateTime.Now.TimeOfDay;
                     await _dao.AgregarCuentaAsync(cuenta);
-                    TempData["SuccessMessage"] = "Cuenta creada exitosamente.";
+                    TempData["SuccessMessage"] = $"Cuenta creada exitosamente. ID: {cuenta.Ncuenta}";
                     return RedirectToAction(nameof(Index));
                 }
                 catch (Exception ex)
@@ -93,6 +103,34 @@ namespace Ciber.MVC.Controllers
                 }
             }
             return View(cuenta);
+        }
+
+        // GET: Cuenta/Recargar/5
+        public async Task<IActionResult> Recargar(int id)
+        {
+            var cuenta = await _dao.ObtenerCuentaPorIdAsync(id);
+            if (cuenta == null)
+            {
+                return NotFound();
+            }
+            return View(cuenta);
+        }
+
+        // POST: Cuenta/Recargar/5
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Recargar(int id, decimal monto)
+        {
+            try
+            {
+                await _dao.RecargarSaldoAsync(id, monto);
+                TempData["SuccessMessage"] = $"Saldo recargado exitosamente: ${monto:N2}";
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = $"Error al recargar saldo: {ex.Message}";
+            }
+            return RedirectToAction(nameof(Details), new { id });
         }
 
         // GET: Cuenta/Delete/5
