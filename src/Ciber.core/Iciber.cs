@@ -120,6 +120,8 @@ public interface IDAO
     Task ActualizarTipoAsync(Tipo tipo);
     Task EliminarTipoAsync(int idTipo);
     Task<IEnumerable<Tipo>> ObtenerTodosLosTiposAsync();
+    Task<Tipo> ObtenerTipoLibreAsync();
+    Task<Tipo> ObtenerTipoHoraDefinidaAsync();
 
     // ALQUILER
     Task AgregarAlquilerAsync(Alquiler alquiler, bool tipoAlquiler);
@@ -173,4 +175,9 @@ public interface IDAO
     Task<Dictionary<string, decimal>> ObtenerEstadisticasDiariasAsync(DateTime fecha);
     Task<IEnumerable<dynamic>> ObtenerTopClientesAsync(int cantidad);
     Task<IEnumerable<dynamic>> ObtenerMaquinasMasRentablesAsync();
+
+    // VALIDACIÓN DE SALDO Y AUTO-FINALIZACIÓN
+    Task<bool> VerificarYFinalizarSiExcedeSaldoAsync(int idAlquiler);
+    Task<IEnumerable<Alquiler>> ObtenerAlquileresQueExcedenSaldoAsync();
+    Task FinalizarAlquileresExcedidosAsync();
 }

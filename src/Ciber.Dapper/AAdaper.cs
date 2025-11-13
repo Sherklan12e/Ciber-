@@ -750,6 +750,18 @@ namespace Ciber.Dapper
             return await _dbConnection.QueryAsync<Tipo>(sql);
         }
 
+        public async Task<Tipo> ObtenerTipoLibreAsync()
+        {
+            var sql = "SELECT * FROM Tipo WHERE idTipo = 1";
+            return await _dbConnection.QueryFirstOrDefaultAsync<Tipo>(sql);
+        }
+
+        public async Task<Tipo> ObtenerTipoHoraDefinidaAsync()
+        {
+            var sql = "SELECT * FROM Tipo WHERE idTipo = 2";
+            return await _dbConnection.QueryFirstOrDefaultAsync<Tipo>(sql);
+        }
+
         public async Task AgregarAlquilerAsync(Alquiler alquiler, bool tipoAlquiler)
         {
             var parameters = new DynamicParameters();
@@ -1084,16 +1096,52 @@ namespace Ciber.Dapper
             return await _dbConnection.QueryAsync(sql);
         }
 
-        public async Task<IEnumerable<Maquina>> ObtenerMaquinaDisponiblesAsync()
+        // ========== VALIDACIÓN DE SALDO Y AUTO-FINALIZACIÓN ==========
+        public async Task<bool> VerificarYFinalizarSiExcedeSaldoAsync(int idAlquiler)
         {
-            var sql = "SELECT * FROM Maquina WHERE estado = 'Disponible'";
-            return await _dbConnection.QueryAsync<Maquina>(sql);
+            var alquiler = await ObtenerAlquilerPorIdAsync(idAlquiler);
+            if (alquiler == null || !alquiler.SesionActiva)
+                return false;
+
+            var saldo = await ObtenerSaldoCuentaAsync(alquiler.Ncuenta);
+            var costoActual = await ObtenerCostoActualAlquilerAsync(idAlquiler);
+
+            // Si el costo actual excede el saldo, finalizar automáticamente
+            if (costoActual > saldo)
+            {
+                await FinalizarAlquilerCompletoAsync(idAlquiler);
+                return true; // Fue finalizado por exceso de saldo
+            }
+
+            return false; // No fue finalizado
         }
 
-        public async Task<IEnumerable<Maquina>> ObtenerMaquinaNoDisponiblesesAsync()
+        public async Task<IEnumerable<Alquiler>> ObtenerAlquileresQueExcedenSaldoAsync()
         {
-            var sql = "SELECT * FROM Maquina WHERE estado != 'Disponible'";
-            return await _dbConnection.QueryAsync<Maquina>(sql);
+            var alquileresActivos = await ObtenerAlquileresActivosAsync();
+            var alquileresExcedidos = new List<Alquiler>();
+
+            foreach (var alquiler in alquileresActivos)
+            {
+                var saldo = await ObtenerSaldoCuentaAsync(alquiler.Ncuenta);
+                var costoActual = await ObtenerCostoActualAlquilerAsync(alquiler.IdAlquiler);
+
+                if (costoActual > saldo)
+                {
+                    alquileresExcedidos.Add(alquiler);
+                }
+            }
+
+            return alquileresExcedidos;
+        }
+
+        public async Task FinalizarAlquileresExcedidosAsync()
+        {
+            var alquileresExcedidos = await ObtenerAlquileresQueExcedenSaldoAsync();
+            foreach (var alquiler in alquileresExcedidos)
+            {
+                await FinalizarAlquilerCompletoAsync(alquiler.IdAlquiler);
+            }
         }
     }
 

@@ -96,7 +96,7 @@
                                     @historial.FechaInicio.ToString("dd/MM/yyyy HH:mm") - 
                                     @historial.FechaFin.ToString("dd/MM/yyyy HH:mm")
                                 </p>
-                                <small class="text-muted">Duración: @historial.tiempoUsado</small>
+                                <small class="text-muted">Duración: @historial.TiempoUsado</small>
                             </div>
                         }
                     </div>
@@ -122,13 +122,13 @@
                         {
                             <div class="list-group-item">
                                 <div class="d-flex w-100 justify-content-between">
-                                    <h6 class="mb-1">@transaccion.tipo</h6>
-                                    <small class="text-@(transaccion.tipo == "Recarga" ? "success" : "danger")">
-                                        @(transaccion.tipo == "Recarga" ? "+" : "-")$@(((decimal)transaccion.monto).ToString("N2"))
+                                    <h6 class="mb-1">@transaccion.Tipo</h6>
+                                    <small class="text-@(transaccion.Tipo == "Recarga" ? "success" : "danger")">
+                                        @(transaccion.Tipo == "Recarga" ? "+" : "-")$@(((decimal)transaccion.Monto).ToString("N2"))
                                     </small>
                                 </div>
-                                <p class="mb-1">@transaccion.descripcion</p>
-                                <small class="text-muted">@transaccion.fecha.ToString("dd/MM/yyyy HH:mm")</small>
+                                <p class="mb-1">@transaccion.Descripcion</p>
+                                <small class="text-muted">@transaccion.Fecha.ToString("dd/MM/yyyy HH:mm")</small>
                             </div>
                         }
                     </div>

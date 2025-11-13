@@ -21,6 +21,9 @@ namespace Ciber.MVC.Controllers
 
         public async Task<IActionResult> Activos()
         {
+            // Finalizar automáticamente los alquileres que exceden el saldo
+            await _dao.FinalizarAlquileresExcedidosAsync();
+            
             var alquileresActivos = await _dao.ObtenerAlquileresActivosAsync();
             return View(alquileresActivos);
         }
