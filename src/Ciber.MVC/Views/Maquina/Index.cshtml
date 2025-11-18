@@ -4,9 +4,10 @@
 }
 
 <div class="d-flex justify-content-between align-items-center mb-4">
-    <h2><i class="fas fa-desktop"></i> @ViewData["Title"]</h2>
+    <h2> @ViewData["Title"]</h2>
     <a href="@Url.Action("Create")" class="btn btn-success">
-        <i class="fas fa-plus"></i> Nueva Máquina
+       
+        Nueva Máquina
     </a>
 </div>
 
@@ -52,10 +53,7 @@
                                 <i class="fas fa-play"></i>
                             </a>
                         }
-                        <a href="@Url.Action("CambiarEstado", new { id = maquina.Nmaquina, estado = "Mantenimiento" })" 
-                           class="btn btn-sm btn-secondary" title="Enviar a Mantenimiento">
-                            <i class="fas fa-tools"></i>
-                        </a>
+                        
                     </div>
                 </div>
             </div>
