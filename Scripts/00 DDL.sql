@@ -343,24 +343,7 @@ BEGIN
     END IF;
 END $$
 
-DROP TRIGGER IF EXISTS after_update_alquiler$$
-CREATE TRIGGER after_update_alquiler 
-AFTER UPDATE ON Alquiler 
-FOR EACH ROW
-BEGIN
-    IF OLD.sesionActiva = TRUE AND NEW.sesionActiva = FALSE THEN
-        INSERT INTO HistorialdeAlquiler (
-            idAlquiler, Ncuenta, Nmaquina, fechaInicio, fechaFin, 
-            tiempoContratado, tiempoUsado, precioPorHora, TotalPagar, 
-            montoPagado, estadoFinal
-        )
-        VALUES (
-            NEW.idAlquiler, NEW.Ncuenta, NEW.Nmaquina, NEW.fechaInicio, NEW.fechaFin,
-            NEW.tiempoContratado, NEW.tiempoUsado, NEW.precioPorHora, NEW.totalAPagar,
-            NEW.montoPagado, NEW.estado
-        );
-    END IF;
-END $$
+
 
 DELIMITER ;
 
